@@ -1,0 +1,30 @@
+---
+# Source: flame/templates/mlflow-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: helm-chart-mlflow
+    namespace: default
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: "/"
+spec:
+    ingressClassName: nginx
+    # In mlflow, selfsigned certificate raises SSLCertVerificationError
+    # So, fiab env disable tls; tls can be enabled with a legitimate cert
+    #
+    # tls:
+    # - hosts:
+    #   - mlflow.flame.test
+    #   secretName: helm-chart-mlflow-tls
+    rules:
+    - host: mlflow.flame.test
+      http:
+        paths:
+        
+        - backend:
+            service:
+              name: helm-chart-mlflow
+              port:
+                number: 5000
+          pathType: Prefix
+          path: /

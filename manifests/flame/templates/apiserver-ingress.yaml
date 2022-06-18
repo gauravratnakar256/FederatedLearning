@@ -1,0 +1,28 @@
+---
+# Source: flame/templates/apiserver-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: helm-chart-apiserver
+    namespace: default
+    annotations:
+      cert-manager.io/cluster-issuer: "selfsigned"
+      nginx.ingress.kubernetes.io/rewrite-target: "/"
+spec:
+    ingressClassName: nginx
+    tls:
+    - hosts:
+      - apiserver.flame.test
+      secretName: helm-chart-apiserver-tls
+    rules:
+    - host: apiserver.flame.test
+      http:
+        paths:
+        
+        - backend:
+            service:
+              name: helm-chart-apiserver
+              port:
+                number: 10100
+          pathType: Prefix
+          path: /

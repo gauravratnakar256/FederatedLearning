@@ -1,0 +1,24 @@
+---
+# Source: flame/templates/deployer-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helm-chart-deployer
+  namespace: default
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helm-chart-deployer
+  template:
+    metadata:
+      labels:
+        app: helm-chart-deployer
+    spec:
+      containers:
+        - args: []
+          command: ["/usr/bin/deployer"]
+          image: flame:latest
+          imagePullPolicy: IfNotPresent
+          name: helm-chart-deployer
