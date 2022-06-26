@@ -19,7 +19,7 @@
 RELEASE_NAME=flame
 
 FILE_OF_INTEREST=helm-chart/values.yaml
-LINES_OF_INTEREST="27,34"
+LINES_OF_INTEREST="30,37"
 
 function init {
     cd helm-chart
