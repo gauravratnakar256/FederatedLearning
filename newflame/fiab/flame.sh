@@ -19,7 +19,7 @@
 RELEASE_NAME=flame
 
 FILE_OF_INTEREST=helm-chart/values.yaml
-LINES_OF_INTEREST="27,34"
+LINES_OF_INTEREST="30,37"
 
 SED_MAC_FIX=
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -194,10 +194,10 @@ function main {
     if [ "$1" == "start" ]; then
 	init
 	start $exposedb
-	post_start_config
+	#post_start_config
     elif [ "$1" == "stop" ]; then
 	stop
-	post_stop_cleanup
+	#post_stop_cleanup
     else
 	echo "usage: ./flame.sh <start [--exposedb] | stop>"
     fi
