@@ -75,38 +75,38 @@ const (
 
 var URI = map[string]string{
 	// Dataset
-	CreateDatasetEndPoint:  "/users/{{.user}}/datasets",
-	GetDatasetEndPoint:     "/users/{{.user}}/datasets/{{.datasetId}}",
-	GetDatasetsEndPoint:    "/users/{{.user}}/datasets/?limit={{.limit}}",
+	CreateDatasetEndPoint:  "/{{.user}}/datasets",
+	GetDatasetEndPoint:     "/{{.user}}/datasets/{{.datasetId}}",
+	GetDatasetsEndPoint:    "/{{.user}}/datasets/?limit={{.limit}}",
 	GetAllDatasetsEndPoint: "/datasets/?limit={{.limit}}",
 
 	// Design
-	CreateDesignEndPoint: "/users/{{.user}}/designs",
-	GetDesignEndPoint:    "/users/{{.user}}/designs/{{.designId}}",
-	GetDesignsEndPoint:   "/users/{{.user}}/designs/?limit={{.limit}}",
+	CreateDesignEndPoint: "/{{.user}}/designs",
+	GetDesignEndPoint:    "/{{.user}}/designs/{{.designId}}",
+	GetDesignsEndPoint:   "/{{.user}}/designs/?limit={{.limit}}",
 
 	// Design schema
-	CreateDesignSchemaEndPoint: "/users/{{.user}}/designs/{{.designId}}/schemas",
-	GetDesignSchemaEndPoint:    "/users/{{.user}}/designs/{{.designId}}/schemas/{{.version}}",
-	GetDesignSchemasEndPoint:   "/users/{{.user}}/designs/{{.designId}}/schemas",
-	UpdateDesignSchemaEndPoint: "/users/{{.user}}/designs/{{.designId}}/schemas/{{.version}}",
+	CreateDesignSchemaEndPoint: "/{{.user}}/designs/{{.designId}}/schemas",
+	GetDesignSchemaEndPoint:    "/{{.user}}/designs/{{.designId}}/schemas/{{.version}}",
+	GetDesignSchemasEndPoint:   "/{{.user}}/designs/{{.designId}}/schemas",
+	UpdateDesignSchemaEndPoint: "/{{.user}}/designs/{{.designId}}/schemas/{{.version}}",
 
 	// Design Code
-	CreateDesignCodeEndPoint: "/users/{{.user}}/designs/{{.designId}}/codes",
-	GetDesignCodeEndPoint:    "/users/{{.user}}/designs/{{.designId}}/codes/{{.version}}",
-	UpdateDesignCodeEndPoint: "/users/{{.user}}/designs/{{.designId}}/codes/{{.version}}",
+	CreateDesignCodeEndPoint: "/{{.user}}/designs/{{.designId}}/codes",
+	GetDesignCodeEndPoint:    "/{{.user}}/designs/{{.designId}}/codes/{{.version}}",
+	UpdateDesignCodeEndPoint: "/{{.user}}/designs/{{.designId}}/codes/{{.version}}",
 
 	// Job
-	CreateJobEndpoint:       "/users/{{.user}}/jobs",
-	GetJobEndPoint:          "/users/{{.user}}/jobs/{{.jobId}}",
-	GetJobsEndPoint:         "/users/{{.user}}/jobs/?limit={{.limit}}",
-	GetJobStatusEndPoint:    "/users/{{.user}}/jobs/{{.jobId}}/status",
-	GetTasksInfoEndpoint:    "/users/{{.user}}/jobs/{{.jobId}}/tasks/?limit={{.limit}}",
-	GetTaskInfoEndpoint:     "/users/{{.user}}/jobs/{{.jobId}}/tasks/{{.taskId}}",
-	UpdateJobEndPoint:       "/users/{{.user}}/jobs/{{.jobId}}",
-	DeleteJobEndPoint:       "/users/{{.user}}/jobs/{{.jobId}}",
-	ChangeJobSchemaEndPoint: "/users/{{.user}}/jobs/{{.jobId}}/schema/{{.schemaId}}/design/{{.designId}}",
-	UpdateJobStatusEndPoint: "/users/{{.user}}/jobs/{{.jobId}}/status",
+	CreateJobEndpoint:       "/{{.user}}/jobs",
+	GetJobEndPoint:          "/{{.user}}/jobs/{{.jobId}}",
+	GetJobsEndPoint:         "/{{.user}}/jobs/?limit={{.limit}}",
+	GetJobStatusEndPoint:    "/{{.user}}/jobs/{{.jobId}}/status",
+	GetTasksInfoEndpoint:    "/{{.user}}/jobs/{{.jobId}}/tasks/?limit={{.limit}}",
+	GetTaskInfoEndpoint:     "/{{.user}}/jobs/{{.jobId}}/tasks/{{.taskId}}",
+	UpdateJobEndPoint:       "/{{.user}}/jobs/{{.jobId}}",
+	DeleteJobEndPoint:       "/{{.user}}/jobs/{{.jobId}}",
+	ChangeJobSchemaEndPoint: "/{{.user}}/jobs/{{.jobId}}/schema/{{.schemaId}}/design/{{.designId}}",
+	UpdateJobStatusEndPoint: "/{{.user}}/jobs/{{.jobId}}/status",
 
 	// Task
 	GetTaskEndpoint:          "/jobs/{{.jobId}}/{{.taskId}}/task/?key={{.key}}",

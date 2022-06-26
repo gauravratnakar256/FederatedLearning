@@ -14,7 +14,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-/users/{user}/jobs:
+/{user}/jobs:
   ########################################
   # Create new job
   ########################################
@@ -96,7 +96,7 @@
               $ref: '#/components/schemas/Error'
         description: unexpected error
 
-/users/{user}/jobs/{jobId}:
+/{user}/jobs/{jobId}:
   ########################################
   # Get job specification given an ID
   ########################################
@@ -217,7 +217,7 @@
               $ref: '#/components/schemas/Error'
         description: unexpected error
 
-/users/{user}/jobs/{jobId}/status:
+/{user}/jobs/{jobId}/status:
   ########################################
   # Get job status
   ########################################
@@ -299,7 +299,7 @@
               $ref: '#/components/schemas/Error'
         description: unexpected error
 
-/users/{user}/jobs/{jobId}/tasks/{taskId}:
+/{user}/jobs/{jobId}/tasks/{taskId}:
   ########################################
   # Get info of a task in a job
   ########################################
@@ -349,7 +349,7 @@
               $ref: '#/components/schemas/Error'
         description: unexpected error
 
-/users/{user}/jobs/{jobId}/tasks:
+/{user}/jobs/{jobId}/tasks:
   ########################################
   # Get info of tasks in a job
   ########################################

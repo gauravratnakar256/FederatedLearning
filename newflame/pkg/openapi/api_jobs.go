@@ -71,31 +71,31 @@ func (c *JobsApiController) Routes() Routes {
 		{
 			"CreateJob",
 			strings.ToUpper("Post"),
-			"/users/{user}/jobs",
+			"/{user}/jobs",
 			c.CreateJob,
 		},
 		{
 			"DeleteJob",
 			strings.ToUpper("Delete"),
-			"/users/{user}/jobs/{jobId}",
+			"/{user}/jobs/{jobId}",
 			c.DeleteJob,
 		},
 		{
 			"GetJob",
 			strings.ToUpper("Get"),
-			"/users/{user}/jobs/{jobId}",
+			"/{user}/jobs/{jobId}",
 			c.GetJob,
 		},
 		{
 			"GetJobStatus",
 			strings.ToUpper("Get"),
-			"/users/{user}/jobs/{jobId}/status",
+			"/{user}/jobs/{jobId}/status",
 			c.GetJobStatus,
 		},
 		{
 			"GetJobs",
 			strings.ToUpper("Get"),
-			"/users/{user}/jobs",
+			"/{user}/jobs",
 			c.GetJobs,
 		},
 		{
@@ -107,25 +107,25 @@ func (c *JobsApiController) Routes() Routes {
 		{
 			"GetTaskInfo",
 			strings.ToUpper("Get"),
-			"/users/{user}/jobs/{jobId}/tasks/{taskId}",
+			"/{user}/jobs/{jobId}/tasks/{taskId}",
 			c.GetTaskInfo,
 		},
 		{
 			"GetTasksInfo",
 			strings.ToUpper("Get"),
-			"/users/{user}/jobs/{jobId}/tasks",
+			"/{user}/jobs/{jobId}/tasks",
 			c.GetTasksInfo,
 		},
 		{
 			"UpdateJob",
 			strings.ToUpper("Put"),
-			"/users/{user}/jobs/{jobId}",
+			"/{user}/jobs/{jobId}",
 			c.UpdateJob,
 		},
 		{
 			"UpdateJobStatus",
 			strings.ToUpper("Put"),
-			"/users/{user}/jobs/{jobId}/status",
+			"/{user}/jobs/{jobId}/status",
 			c.UpdateJobStatus,
 		},
 		{
