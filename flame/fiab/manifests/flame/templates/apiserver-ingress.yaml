@@ -4,7 +4,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
     name: helm-chart-apiserver
-    namespace: default
+    namespace: flame
     annotations:
       cert-manager.io/cluster-issuer: "selfsigned"
       nginx.ingress.kubernetes.io/rewrite-target: "/"

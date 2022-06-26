@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: helm-chart-notifier
     tier: backend
   name: helm-chart-notifier
-  namespace: default
+  namespace: flame
 spec:
   ports:
     - name: notifier

@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: helm-chart-mosquitto
     tier: backend
   name: helm-chart-mosquitto
-  namespace: default
+  namespace: flame
 spec:
   ports:
   - port: 1883
