@@ -21,7 +21,7 @@ spec:
             - --controller
             - "http://helm-chart-controller:10102"
           command: ["/usr/bin/apiserver"]
-          image: flame:latest
+          image: gaurav256/flame:latest
           imagePullPolicy: IfNotPresent
           name: helm-chart-apiserver
           ports:

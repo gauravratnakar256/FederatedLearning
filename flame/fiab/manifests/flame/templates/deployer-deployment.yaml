@@ -19,6 +19,6 @@ spec:
       containers:
         - args: []
           command: ["/usr/bin/deployer"]
-          image: flame:latest
+          image: gaurav256/flame:latest
           imagePullPolicy: IfNotPresent
           name: helm-chart-deployer

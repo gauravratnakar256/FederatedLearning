@@ -22,7 +22,7 @@ spec:
             - "--insecure"
             
           command: ["/usr/bin/controller"]
-          image: flame:latest
+          image: gaurav256/flame:latest
           imagePullPolicy: IfNotPresent
           name: helm-chart-controller
           ports:

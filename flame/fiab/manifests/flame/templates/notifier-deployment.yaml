@@ -19,7 +19,7 @@ spec:
       containers:
         - args: []
           command: ["/usr/bin/notifier"]
-          image: flame:latest
+          image: gaurav256/flame:latest
           imagePullPolicy: IfNotPresent
           name: helm-chart-notifier
           ports:

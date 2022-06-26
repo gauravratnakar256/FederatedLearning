@@ -13,7 +13,7 @@ data:
     platform: k8s
     namespace: default
     jobParams:
-      image: flame:latest
+      image: gaurav256/flame:latest
       brokers:
         - sort: mqtt
           host: flame-mosquitto
