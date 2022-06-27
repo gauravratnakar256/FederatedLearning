@@ -19,6 +19,9 @@ mongodb:
   architecture: replicaset
   auth:
     enabled: false
+  persistence:
+    enabled: false
+    storageClass: nfs
 
   # Uncomment the following block after the 1st installation of flame helm chart.
   # The block allows access to database outside the k8s cluster.
@@ -34,9 +37,9 @@ mongodb:
   #   create: true
   #######
 
-imageName: flame
+imageName: gaurav256/flame
 imageTag: latest
-workerImageName: flame
+workerImageName: gaurav256/flame
 workerImageTag: latest
 
 broker:
