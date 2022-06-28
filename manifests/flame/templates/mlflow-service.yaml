@@ -4,9 +4,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/name: helm-chart-mlflow
+    app.kubernetes.io/name: flame-mlflow
     tier: backend
-  name: helm-chart-mlflow
+  name: flame-mlflow
   namespace: default
 spec:
   ports:
@@ -14,7 +14,7 @@ spec:
       port: 5000
       targetPort: 5000
   selector:
-    app: helm-chart-mlflow
+    app: flame-mlflow
   type: ClusterIP
 ---
 # Source: flame/templates/mlflow-service.yaml

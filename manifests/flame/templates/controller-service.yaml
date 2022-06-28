@@ -4,9 +4,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/name: helm-chart-controller
+    app.kubernetes.io/name: flame-controller
     tier: backend
-  name: helm-chart-controller
+  name: flame-controller
   namespace: default
 spec:
   ports:
@@ -16,7 +16,7 @@ spec:
       targetPort: 10102
   type: ClusterIP
   selector:
-    app: helm-chart-controller
+    app: flame-controller
 ---
 # Source: flame/templates/controller-service.yaml
 # Copyright 2022 Cisco Systems, Inc. and its affiliates

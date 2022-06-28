@@ -3,12 +3,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: helm-chart-mongodb-arbiter-headless
+  name: flame-mongodb-arbiter-headless
   namespace: default
   labels:
     app.kubernetes.io/name: mongodb
     helm.sh/chart: mongodb-10.31.3
-    app.kubernetes.io/instance: helm-chart
+    app.kubernetes.io/instance: flame
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: arbiter
 spec:
@@ -20,5 +20,5 @@ spec:
       targetPort: mongodb
   selector:
     app.kubernetes.io/name: mongodb
-    app.kubernetes.io/instance: helm-chart
+    app.kubernetes.io/instance: flame
     app.kubernetes.io/component: arbiter

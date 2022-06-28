@@ -4,16 +4,16 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/name: helm-chart-mosquitto2
+    app.kubernetes.io/name: flame-mosquitto2
     tier: backend
-  name: helm-chart-mosquitto2
+  name: flame-mosquitto2
   namespace: default
 spec:
   ports:
   - port: 1883
     targetPort: 1883
   selector:
-    app: helm-chart-mosquitto2
+    app: flame-mosquitto2
 ---
 # Source: flame/templates/mosquitto2-service.yaml
 # Copyright 2022 Cisco Systems, Inc. and its affiliates

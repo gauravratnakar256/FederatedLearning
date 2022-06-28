@@ -3,25 +3,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: helm-chart-notifier
+  name: flame-notifier
   namespace: default
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: helm-chart-notifier
+      app: flame-notifier
   template:
     metadata:
       labels:
-        app: helm-chart-notifier
+        app: flame-notifier
     spec:
       containers:
         - args: []
           command: ["/usr/bin/notifier"]
-          image: flame:latest
+          image: gaurav256/flame:latest
           imagePullPolicy: IfNotPresent
-          name: helm-chart-notifier
+          name: flame-notifier
           ports:
             - containerPort: 10101
 ---

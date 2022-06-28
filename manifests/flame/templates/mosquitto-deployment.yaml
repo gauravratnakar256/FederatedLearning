@@ -3,22 +3,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: helm-chart-mosquitto
+  name: flame-mosquitto
   namespace: default
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: helm-chart-mosquitto
+      app: flame-mosquitto
   template:
     metadata:
       labels:
-        app: helm-chart-mosquitto
+        app: flame-mosquitto
     spec:
       containers:
         - image: eclipse-mosquitto:2.0.14
-          name: helm-chart-mosquitto
+          name: flame-mosquitto
           ports:
             - containerPort: 1883
           volumeMounts:
@@ -28,7 +28,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: helm-chart-mosquitto-configmap
+            name: flame-mosquitto-configmap
 ---
 # Source: flame/templates/mosquitto-deployment.yaml
 # Copyright 2022 Cisco Systems, Inc. and its affiliates

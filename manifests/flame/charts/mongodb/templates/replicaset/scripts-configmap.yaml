@@ -3,12 +3,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: helm-chart-mongodb-scripts
+  name: flame-mongodb-scripts
   namespace: default
   labels:
     app.kubernetes.io/name: mongodb
     helm.sh/chart: mongodb-10.31.3
-    app.kubernetes.io/instance: helm-chart
+    app.kubernetes.io/instance: flame
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: mongodb
 data:
@@ -20,7 +20,7 @@ data:
     echo "Advertised Hostname: $MONGODB_ADVERTISED_HOSTNAME"
     echo "Advertised Port: $MONGODB_ADVERTISED_PORT_NUMBER"
 
-    if [[ "$MY_POD_NAME" = "helm-chart-mongodb-0" ]]; then
+    if [[ "$MY_POD_NAME" = "flame-mongodb-0" ]]; then
         echo "Pod name matches initial primary pod name, configuring node as a primary"
         export MONGODB_REPLICA_SET_MODE="primary"
     else

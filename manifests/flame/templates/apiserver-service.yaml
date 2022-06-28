@@ -4,9 +4,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/name: helm-chart-apiserver
+    app.kubernetes.io/name: flame-apiserver
     tier: backend
-  name: helm-chart-apiserver
+  name: flame-apiserver
   namespace: default
 spec:
   ports:
@@ -15,7 +15,7 @@ spec:
       port: 10100
       targetPort: 10100
   selector:
-    app: helm-chart-apiserver
+    app: flame-apiserver
   type: ClusterIP
 ---
 # Source: flame/templates/apiserver-service.yaml

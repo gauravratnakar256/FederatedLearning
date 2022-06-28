@@ -3,7 +3,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: helm-chart-apiserver
+    name: flame-apiserver
     namespace: default
     annotations:
       cert-manager.io/cluster-issuer: "selfsigned"
@@ -12,16 +12,16 @@ spec:
     ingressClassName: nginx
     tls:
     - hosts:
-      - apiserver.flame.test
-      secretName: helm-chart-apiserver-tls
+      - example.apiserver.flame.test
+      secretName: flame-apiserver-tls
     rules:
-    - host: apiserver.flame.test
+    - host: example.apiserver.flame.test
       http:
         paths:
         
         - backend:
             service:
-              name: helm-chart-apiserver
+              name: flame-apiserver
               port:
                 number: 10100
           pathType: Prefix

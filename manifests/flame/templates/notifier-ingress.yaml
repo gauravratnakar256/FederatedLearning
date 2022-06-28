@@ -3,7 +3,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: helm-chart-notifier
+    name: flame-notifier
     namespace: default
     annotations:
       cert-manager.io/cluster-issuer: "selfsigned"
@@ -13,16 +13,16 @@ spec:
     ingressClassName: nginx
     tls:
     - hosts:
-      - notifier.flame.test
-      secretName: helm-chart-notifier-tls
+      - example.notifier.flame.test
+      secretName: flame-notifier-tls
     rules:
-    - host: notifier.flame.test
+    - host: example.notifier.flame.test
       http:
         paths:
         
         - backend:
             service:
-              name: helm-chart-notifier
+              name: flame-notifier
               port:
                 number: 10101
           pathType: Prefix

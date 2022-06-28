@@ -3,22 +3,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: helm-chart-deployer
+  name: flame-deployer
   namespace: default
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: helm-chart-deployer
+      app: flame-deployer
   template:
     metadata:
       labels:
-        app: helm-chart-deployer
+        app: flame-deployer
     spec:
       containers:
         - args: []
           command: ["/usr/bin/deployer"]
-          image: flame:latest
+          image: gaurav256/flame:latest
           imagePullPolicy: IfNotPresent
-          name: helm-chart-deployer
+          name: flame-deployer

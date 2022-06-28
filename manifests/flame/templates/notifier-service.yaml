@@ -4,9 +4,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app.kubernetes.io/name: helm-chart-notifier
+    app.kubernetes.io/name: flame-notifier
     tier: backend
-  name: helm-chart-notifier
+  name: flame-notifier
   namespace: default
 spec:
   ports:
@@ -15,7 +15,7 @@ spec:
       port: 10101
       targetPort: 10101
   selector:
-    app: helm-chart-notifier
+    app: flame-notifier
   type: ClusterIP
 ---
 # Source: flame/templates/notifier-service.yaml

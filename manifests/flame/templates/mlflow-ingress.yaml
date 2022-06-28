@@ -3,7 +3,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: helm-chart-mlflow
+    name: flame-mlflow
     namespace: default
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: "/"
@@ -14,16 +14,16 @@ spec:
     #
     # tls:
     # - hosts:
-    #   - mlflow.flame.test
-    #   secretName: helm-chart-mlflow-tls
+    #   - example.mlflow.flame.test
+    #   secretName: flame-mlflow-tls
     rules:
-    - host: mlflow.flame.test
+    - host: example.mlflow.flame.test
       http:
         paths:
         
         - backend:
             service:
-              name: helm-chart-mlflow
+              name: flame-mlflow
               port:
                 number: 5000
           pathType: Prefix

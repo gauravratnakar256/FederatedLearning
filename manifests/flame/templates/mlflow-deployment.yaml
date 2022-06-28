@@ -3,25 +3,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: helm-chart-mlflow
+  name: flame-mlflow
   namespace: default
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: helm-chart-mlflow
+      app: flame-mlflow
   template:
     metadata:
       labels:
-        app: helm-chart-mlflow
+        app: flame-mlflow
     spec:
       containers:
         - args:
             - "mlflow server --backend-store-uri postgresql://mlflow:mlflow@postgres/mlflow --default-artifact-root file:./mlruns --host 0.0.0.0"
           command: ["bash", "-c"]
           image: adacotechjp/mlflow:1.21.0
-          name: helm-chart-mlflow
+          name: flame-mlflow
           ports:
             - containerPort: 5000
       restartPolicy: Always

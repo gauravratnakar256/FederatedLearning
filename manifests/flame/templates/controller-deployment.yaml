@@ -3,18 +3,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: helm-chart-controller
+  name: flame-controller
   namespace: default
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: helm-chart-controller
+      app: flame-controller
   template:
     metadata:
       labels:
-        app: helm-chart-controller
+        app: flame-controller
     spec:
       containers:
         - args:
@@ -22,20 +22,27 @@ spec:
             - "--insecure"
             
           command: ["/usr/bin/controller"]
-          image: flame:latest
+          image: gaurav256/flame:latest
           imagePullPolicy: IfNotPresent
-          name: helm-chart-controller
+          name: flame-controller
           ports:
             - containerPort: 10102
           volumeMounts:
             - mountPath: /etc/flame/controller.yaml
               name: config-volume
               subPath: controller.yaml
+
+            - mountPath: /flame/template
+              name: job-template-volume
+
       serviceAccountName: controller
       volumes:
         - name: config-volume
           configMap:
-            name: helm-chart-controller-configmap
+            name: flame-controller-configmap
+        - name: job-template-volume
+          configMap:
+            name: flame-controller-job-configmap
 ---
 # Source: flame/templates/controller-deployment.yaml
 # Copyright 2022 Cisco Systems, Inc. and its affiliates

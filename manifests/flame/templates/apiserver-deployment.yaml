@@ -3,27 +3,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: helm-chart-apiserver
+  name: flame-apiserver
   namespace: default
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: helm-chart-apiserver
+      app: flame-apiserver
   template:
     metadata:
       labels:
-        app: helm-chart-apiserver
+        app: flame-apiserver
     spec:
       containers:
         - args:
             - --controller
-            - "http://helm-chart-controller:10102"
+            - "http://flame-controller:10102"
           command: ["/usr/bin/apiserver"]
-          image: flame:latest
+          image: gaurav256/flame:latest
           imagePullPolicy: IfNotPresent
-          name: helm-chart-apiserver
+          name: flame-apiserver
           ports:
             - containerPort: 10100
 ---
