@@ -48,7 +48,7 @@ broker:
 
 registry:
   sort: mlflow
-  uri: http://example.mlflow.flame.test
+  uri: http://flame-mlflow.flame.test
 
 ingress:
   ingressClassName: nginx
@@ -68,7 +68,7 @@ ingress:
 frontDoorUrl:
   apiserver: example.apiserver.flame.test
   notifier: example.notifier.flame.test
-  mlflow: example.mlflow.flame.test
+  mlflow: flame-mlflow.flame.test
 
 servicePort:
   apiserver: "10100"
