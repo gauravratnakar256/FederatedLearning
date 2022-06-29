@@ -13,24 +13,23 @@
 # limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
-
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: serving.knative.dev/v1
+kind: Service
 metadata:
   name: {{ .Release.Name }}-apiserver
   namespace: {{ .Release.Namespace }}
-
 spec:
-  replicas: {{ .Values.replicas }}
-  selector:
-    matchLabels:
-      app: {{ .Release.Name }}-apiserver
   template:
     metadata:
+      annotations:
+        autoscaling.knative.dev/metric: rps  
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/target: "8"
       labels:
         app: {{ .Release.Name }}-apiserver
     spec:
+      containerConcurrency: 4
       containers:
         - args:
             - --controller

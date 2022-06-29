@@ -24,12 +24,12 @@ spec:
             service:
               name: {{ .Release.Name }}-apiserver
               port:
-                number: {{ .Values.servicePort.apiserver }}
+                number: 80
           pathType: Prefix
           path: /
         {{ else }}
         - backend:
             serviceName: {{ .Release.Name }}-apiserver
-            servicePort: {{ .Values.servicePort.apiserver }}
+            servicePort: 80
           path: /
         {{ end }}

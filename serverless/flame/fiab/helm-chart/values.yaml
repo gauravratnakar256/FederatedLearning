@@ -66,7 +66,7 @@ ingress:
     nginx.ingress.kubernetes.io/rewrite-target: /
 
 frontDoorUrl:
-  apiserver: example.apiserver.flame.test
+  apiserver: flame-apiserver.flame.test
   notifier: example.notifier.flame.test
   mlflow: flame-mlflow.flame.test
 
