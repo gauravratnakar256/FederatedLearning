@@ -1,0 +1,28 @@
+---
+# Source: flame/templates/apiserver-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: flame-apiserver
+    namespace: default
+    annotations:
+      cert-manager.io/cluster-issuer: "selfsigned"
+      nginx.ingress.kubernetes.io/rewrite-target: "/"
+spec:
+    ingressClassName: nginx
+    tls:
+    - hosts:
+      - example.apiserver.flame.test
+      secretName: flame-apiserver-tls
+    rules:
+    - host: example.apiserver.flame.test
+      http:
+        paths:
+        
+        - backend:
+            service:
+              name: flame-apiserver
+              port:
+                number: 10100
+          pathType: Prefix
+          path: /

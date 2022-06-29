@@ -1,0 +1,24 @@
+---
+# Source: flame/templates/deployer-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flame-deployer
+  namespace: default
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flame-deployer
+  template:
+    metadata:
+      labels:
+        app: flame-deployer
+    spec:
+      containers:
+        - args: []
+          command: ["/usr/bin/deployer"]
+          image: gaurav256/flame:latest
+          imagePullPolicy: IfNotPresent
+          name: flame-deployer

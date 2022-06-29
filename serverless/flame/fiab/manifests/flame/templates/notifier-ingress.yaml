@@ -1,0 +1,29 @@
+---
+# Source: flame/templates/notifier-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+    name: flame-notifier
+    namespace: default
+    annotations:
+      cert-manager.io/cluster-issuer: "selfsigned"
+      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+    ingressClassName: nginx
+    tls:
+    - hosts:
+      - example.notifier.flame.test
+      secretName: flame-notifier-tls
+    rules:
+    - host: example.notifier.flame.test
+      http:
+        paths:
+        
+        - backend:
+            service:
+              name: flame-notifier
+              port:
+                number: 10101
+          pathType: Prefix
+          path: /
