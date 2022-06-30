@@ -69,7 +69,7 @@ frontDoorUrl:
   apiserver: flame-apiserver.flame.test
   notifier: example.notifier.flame.test
   mlflow: flame-mlflow.flame.test
-  controller: flame-controller.falme.test
+  controller: flame-controller.flame.test
 
 servicePort:
   apiserver: "10100"
