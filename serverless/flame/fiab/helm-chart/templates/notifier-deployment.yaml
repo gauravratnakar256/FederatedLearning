@@ -38,4 +38,5 @@ spec:
           imagePullPolicy: IfNotPresent
           name: {{ .Release.Name }}-notifier
           ports:
-            - containerPort: {{ .Values.servicePort.notifier }}
+            - name: h2c
+              containerPort: {{ .Values.servicePort.notifier }}
