@@ -33,7 +33,7 @@ spec:
       containers:
         - args:
             - --controller
-            - "http://{{ .Release.Name }}-controller:{{ .Values.servicePort.controller }}"
+            - "http://{{ .Release.Name }}-controller:80"
           command: ["/usr/bin/apiserver"]
           image: {{ .Values.imageName }}:{{ .Values.imageTag }}
           imagePullPolicy: IfNotPresent

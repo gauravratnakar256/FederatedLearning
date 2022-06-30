@@ -15,29 +15,29 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: serving.knative.dev/v1
+kind: Service
 metadata:
   name: {{ .Release.Name }}-controller
   namespace: {{ .Release.Namespace }}
-
 spec:
-  replicas: {{ .Values.replicas }}
-  selector:
-    matchLabels:
-      app: {{ .Release.Name }}-controller
   template:
     metadata:
+      annotations:
+        autoscaling.knative.dev/metric: rps  
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/target: "8"
       labels:
         app: {{ .Release.Name }}-controller
     spec:
+      containerConcurrency: 4
       containers:
         - args:
             {{ if .Values.insecure }}
             - "--insecure"
             {{ end }}
-          command: ["/usr/bin/controller"]
-          image: {{ .Values.imageName }}:{{ .Values.imageTag }}
+          command:  ["/usr/bin/controller"]
+          image:  {{ .Values.imageName }}:{{ .Values.imageTag }}
           imagePullPolicy: IfNotPresent
           name: {{ .Release.Name }}-controller
           ports:
@@ -46,7 +46,7 @@ spec:
             - mountPath: /etc/flame/controller.yaml
               name: config-volume
               subPath: controller.yaml
-
+              
             - mountPath: /flame/template
               name: job-template-volume
 
@@ -54,7 +54,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ .Release.Name }}-controller-configmap
+            name: {{ .Release.Name }}-controller-configmap  
         - name: job-template-volume
           configMap:
             name: {{ .Release.Name }}-controller-job-configmap
