@@ -19,7 +19,7 @@ data:
       agent: {{ .Values.servicePort.agent }}
 
     endpoint:
-      apiserver: https://{{ .Values.frontDoorUrl.apiserver }}:80
+      apiserver: http://{{ .Values.frontDoorUrl.apiserver }}:80
       notifier: {{ .Values.frontDoorUrl.notifier }}:80
 
     # enable this in case a selfsigned cert is in use (for test only)
