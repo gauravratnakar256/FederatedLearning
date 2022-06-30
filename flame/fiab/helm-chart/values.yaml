@@ -48,7 +48,7 @@ broker:
 
 registry:
   sort: mlflow
-  uri: http://example.mlflow.flame.test
+  uri: http://mlflow.flame.test
 
 ingress:
   ingressClassName: nginx
@@ -66,9 +66,9 @@ ingress:
     nginx.ingress.kubernetes.io/rewrite-target: /
 
 frontDoorUrl:
-  apiserver: example.apiserver.flame.test
-  notifier: example.notifier.flame.test
-  mlflow: example.mlflow.flame.test
+  apiserver: apiserver.flame.test
+  notifier: notifier.flame.test
+  mlflow: mlflow.flame.test
 
 servicePort:
   apiserver: "10100"
