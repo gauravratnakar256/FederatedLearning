@@ -67,7 +67,7 @@ ingress:
 
 frontDoorUrl:
   apiserver: flame-apiserver.flame.test
-  notifier: example.notifier.flame.test
+  notifier: flame-notifier.flame.test
   mlflow: flame-mlflow.flame.test
   controller: flame-controller.flame.test
 

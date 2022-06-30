@@ -24,12 +24,12 @@ spec:
             service:
               name: {{ .Release.Name }}-notifier
               port:
-                number: {{ .Values.servicePort.notifier }}
+                number: 80
           pathType: Prefix
           path: /
         {{ else }}
         - backend:
             serviceName: {{ .Release.Name }}-notifier
-            servicePort: {{ .Values.servicePort.notifier }}
+            servicePort: 80
           path: /
         {{ end }}
