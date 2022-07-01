@@ -18,13 +18,14 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
+  annotations:
+    networking.knative.dev/disable-auto-tls: "true"
   name: {{ .Release.Name }}-mlflow
   namespace: {{ .Release.Namespace }}
 spec:
   template:
     metadata:
       annotations:
-        networking.knative.dev/disable-auto-tls: "true"
         autoscaling.knative.dev/metric: rps  
         autoscaling.knative.dev/minScale: "1"
         autoscaling.knative.dev/target: "8"
