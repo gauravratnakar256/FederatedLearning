@@ -15,9 +15,9 @@ spec:
       containers:
         - args:
             - "--apiserver"
-            - "example.apiserver.flame.test"
+            - "{{ .Values.endpoint.apiserver }}"
             - "--notifier"
-            - "example.notifier.flame.test"
+            - "{{ .Values.endpoint.notifier }}"
             {{ if .Values.insecure }}
             - "--insecure"
             {{ end }}
