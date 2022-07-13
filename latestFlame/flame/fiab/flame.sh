@@ -84,7 +84,7 @@ function start {
 }
 
 function post_start_config {
-    minikube_ip=$(minikube ip)
+    minikube_ip=$(kubectl get nodes -o wide | awk '{print $6}' | sed -n 2p)
 
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 	subnet=$(ip a show | grep br- | grep inet | awk '{print $2}')
@@ -151,7 +151,7 @@ function stop {
 }
 
 function post_stop_cleanup {
-    minikube_ip=$(minikube ip)
+    minikube_ip=$(kubectl get nodes -o wide | awk '{print $6}' | sed -n 2p)
 
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 	resolver_file=/etc/systemd/network/minikube.network
