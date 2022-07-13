@@ -86,24 +86,6 @@ function start {
 function post_start_config {
     minikube_ip=$(kubectl get nodes -o wide | awk '{print $6}' | sed -n 2p)
 
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-	subnet=$(ip a show | grep br- | grep inet | awk '{print $2}')
-	resolver_file=/etc/systemd/network/minikube.network
-	echo "[Match]" | sudo tee $resolver_file > /dev/null
-	echo "Name=br*" | sudo tee -a $resolver_file > /dev/null
-	echo "[Network]" | sudo tee -a $resolver_file > /dev/null
-	echo "Address=$subnet" | sudo tee -a $resolver_file > /dev/null
-	echo "DNS=$minikube_ip" | sudo tee -a $resolver_file > /dev/null
-	echo "Domains=~flame.test" | sudo tee -a $resolver_file > /dev/null
-	sudo systemctl restart systemd-networkd
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-	resolver_file=/etc/resolver/flame-test
-	echo "domain flame.test" | sudo tee $resolver_file > /dev/null
-	echo "nameserver $minikube_ip" | sudo tee -a $resolver_file > /dev/null
-	echo "search_order 1" | sudo tee -a $resolver_file > /dev/null
-	echo "timeout 5" | sudo tee -a $resolver_file > /dev/null
-    fi
-
     # add dns entry for flame.test domain  in coredns
     tmp_file=tmp.bak
     # step 1: save the current entry
@@ -112,10 +94,11 @@ function post_start_config {
     sed -i $SED_MAC_FIX '/^$/d' $tmp_file
 
     # step 3: append the dns entry for flame.test domain at the end of file
-    echo "flame.test:53 {" | tee -a $tmp_file > /dev/null
-    echo "    errors" | tee -a $tmp_file > /dev/null
-    echo "    cache 30" | tee -a $tmp_file > /dev/null
-    echo "    forward . $minikube_ip" | tee -a $tmp_file > /dev/null
+    echo "hosts {" | tee -a $tmp_file > /dev/null
+    echo "    $minikube_ip apiserver.flame.test" | tee -a $tmp_file > /dev/null
+    echo "    $minikube_ip notifier.flame.test" | tee -a $tmp_file > /dev/null
+    echo "    $minikube_ip mlflow.flame.test" | tee -a $tmp_file > /dev/null
+    echo "    $minikube_ip minio.flame.test" | tee -a $tmp_file > /dev/null
     echo "}" | tee -a $tmp_file > /dev/null
 
     # step 4: create patch file
@@ -153,23 +136,14 @@ function stop {
 function post_stop_cleanup {
     minikube_ip=$(kubectl get nodes -o wide | awk '{print $6}' | sed -n 2p)
 
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-	resolver_file=/etc/systemd/network/minikube.network
-	sudo rm -f $resolver_file
-	sudo systemctl restart systemd-networkd
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-	resolver_file=/etc/resolver/flame-test
-	sudo rm -f $resolver_file
-    fi
-
     # remove dns entry for flame.test domain in coredns
     tmp_file=tmp.bak
     # step 1: save the current entry
     kubectl get configmap coredns -n kube-system -o json | jq -r '.data."Corefile"' > $tmp_file
 
     sed -i $SED_MAC_FIX '/^$/d' $tmp_file
-    # remove last five lines
-    for i in {1..5}; do
+    # remove last six lines
+    for i in {1..6}; do
 	sed -i $SED_MAC_FIX '$d' $tmp_file
     done
 
