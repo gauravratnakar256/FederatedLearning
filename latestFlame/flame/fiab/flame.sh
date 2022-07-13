@@ -99,6 +99,7 @@ function post_start_config {
     echo "          $minikube_ip notifier.flame.test" | tee -a $tmp_file > /dev/null
     echo "          $minikube_ip mlflow.flame.test" | tee -a $tmp_file > /dev/null
     echo "          $minikube_ip minio.flame.test" | tee -a $tmp_file > /dev/null
+    echo "          fallthrough" | tee -a $tmp_file > /dev/null
     echo "    }" | tee -a $tmp_file > /dev/null
 
     # step 4: create patch file
