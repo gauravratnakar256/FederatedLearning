@@ -94,12 +94,12 @@ function post_start_config {
     sed -i $SED_MAC_FIX '/^$/d' $tmp_file
 
     # step 3: append the dns entry for flame.test domain at the end of file
-    echo "hosts {" | tee -a $tmp_file > /dev/null
-    echo "    $minikube_ip apiserver.flame.test" | tee -a $tmp_file > /dev/null
-    echo "    $minikube_ip notifier.flame.test" | tee -a $tmp_file > /dev/null
-    echo "    $minikube_ip mlflow.flame.test" | tee -a $tmp_file > /dev/null
-    echo "    $minikube_ip minio.flame.test" | tee -a $tmp_file > /dev/null
-    echo "}" | tee -a $tmp_file > /dev/null
+    echo "    hosts {" | tee -a $tmp_file > /dev/null
+    echo "          $minikube_ip apiserver.flame.test" | tee -a $tmp_file > /dev/null
+    echo "          $minikube_ip notifier.flame.test" | tee -a $tmp_file > /dev/null
+    echo "          $minikube_ip mlflow.flame.test" | tee -a $tmp_file > /dev/null
+    echo "          $minikube_ip minio.flame.test" | tee -a $tmp_file > /dev/null
+    echo "    }" | tee -a $tmp_file > /dev/null
 
     # step 4: create patch file
     echo "{\"data\": {\"Corefile\": $(jq -R -s < $tmp_file)}}" > $tmp_file
