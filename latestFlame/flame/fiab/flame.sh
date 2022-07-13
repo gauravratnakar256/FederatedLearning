@@ -144,7 +144,7 @@ function post_stop_cleanup {
 
     sed -i $SED_MAC_FIX '/^$/d' $tmp_file
     # remove last six lines
-    for i in {1..6}; do
+    for i in {1..7}; do
 	sed -i $SED_MAC_FIX '$d' $tmp_file
     done
 
