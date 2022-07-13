@@ -57,7 +57,7 @@ minio:
       policy: readwrite
   ingress:
     enabled: true
-    ingressClassName: istio
+    ingressClassName: nginx
     annotations: {}
     hosts:
       - minio.flame.test
