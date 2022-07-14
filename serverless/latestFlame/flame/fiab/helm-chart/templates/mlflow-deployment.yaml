@@ -15,22 +15,24 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: serving.knative.dev/v1
+kind: Service
 metadata:
+  annotations:
+    networking.knative.dev/disable-auto-tls: "true"
   name: {{ .Release.Name }}-mlflow
   namespace: {{ .Release.Namespace }}
-
 spec:
-  replicas: {{ .Values.replicas }}
-  selector:
-    matchLabels:
-      app: {{ .Release.Name }}-mlflow
   template:
     metadata:
+      annotations:
+        autoscaling.knative.dev/metric: rps  
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/target: "8"
       labels:
         app: {{ .Release.Name }}-mlflow
     spec:
+      containerConcurrency: 4
       containers:
         - args:
             - "mlflow server --backend-store-uri postgresql://mlflow:mlflow@postgres/mlflow --default-artifact-root s3://mlruns --host 0.0.0.0"
@@ -38,7 +40,7 @@ spec:
           image: adacotechjp/mlflow:1.21.0
           name: {{ .Release.Name }}-mlflow
           ports:
-            - containerPort: {{ .Values.mlflow.servicePort }}
+            - containerPort:  {{ .Values.servicePort.mlflow }}
           env:
             - name: MLFLOW_S3_ENDPOINT_URL
               value: {{ .Values.mlflow.s3EndpointUrl }}
@@ -46,4 +48,3 @@ spec:
               value: {{ (index .Values.minio.users 0).accessKey }}
             - name: AWS_SECRET_ACCESS_KEY
               value: {{ (index .Values.minio.users 0).secretKey }}
-      restartPolicy: Always
