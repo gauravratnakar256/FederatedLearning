@@ -40,7 +40,7 @@ spec:
           image: adacotechjp/mlflow:1.21.0
           name: {{ .Release.Name }}-mlflow
           ports:
-            - containerPort:  {{ .Values.servicePort.mlflow }}
+            - containerPort: {{ .Values.mlflow.servicePort }}
           env:
             - name: MLFLOW_S3_ENDPOINT_URL
               value: {{ .Values.mlflow.s3EndpointUrl }}
