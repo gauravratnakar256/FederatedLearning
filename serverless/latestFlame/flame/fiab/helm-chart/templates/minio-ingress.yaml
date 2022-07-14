@@ -3,8 +3,8 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: istio
-  namespace: {{ .Release.Namespace }}
   name: {{ .Release.Name }}-minio
+  namespace: {{ .Release.Namespace }}
 spec:
   rules:
   - host: {{ .Values.frontDoorUrl.minio }}
