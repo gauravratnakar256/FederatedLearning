@@ -95,9 +95,10 @@ function post_start_config {
 
     # step 3: append the dns entry for flame.test domain at the end of file
     echo "    hosts {" | tee -a $tmp_file > /dev/null
-    echo "          $minikube_ip apiserver.flame.test" | tee -a $tmp_file > /dev/null
-    echo "          $minikube_ip notifier.flame.test" | tee -a $tmp_file > /dev/null
-    echo "          $minikube_ip mlflow.flame.test" | tee -a $tmp_file > /dev/null
+    echo "          $minikube_ip flame-apiserver.flame.test" | tee -a $tmp_file > /dev/null
+    echo "          $minikube_ip flame-notifier.flame.test" | tee -a $tmp_file > /dev/null
+    echo "          $minikube_ip flame-mlflow.flame.test" | tee -a $tmp_file > /dev/null
+    echo "          $minikube_ip flame-controller.flame.test" | tee -a $tmp_file > /dev/null
     echo "          $minikube_ip minio.flame.test" | tee -a $tmp_file > /dev/null
     echo "          fallthrough" | tee -a $tmp_file > /dev/null
     echo "    }" | tee -a $tmp_file > /dev/null
@@ -144,7 +145,7 @@ function post_stop_cleanup {
 
     sed -i $SED_MAC_FIX '/^$/d' $tmp_file
     # remove last six lines
-    for i in {1..7}; do
+    for i in {1..8}; do
 	sed -i $SED_MAC_FIX '$d' $tmp_file
     done
 
