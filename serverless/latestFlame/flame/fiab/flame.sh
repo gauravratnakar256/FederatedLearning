@@ -170,10 +170,10 @@ function main {
     if [ "$1" == "start" ]; then
 	init
 	start $exposedb
-	post_start_config
+	#post_start_config
     elif [ "$1" == "stop" ]; then
 	stop
-	post_stop_cleanup
+	#post_stop_cleanup
     else
 	echo "usage: ./flame.sh <start [--exposedb] | stop>"
     fi
