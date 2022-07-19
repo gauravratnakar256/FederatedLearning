@@ -35,3 +35,7 @@ metadata:
 spec:
   selfSigned: {}
 EOF
+
+# Install Knative Cert-Manager core components
+kubectl apply -f https://github.com/knative/net-certmanager/releases/download/knative-v1.4.0/release.yaml
+
