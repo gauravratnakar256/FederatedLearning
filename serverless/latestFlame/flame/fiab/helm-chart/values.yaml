@@ -98,7 +98,7 @@ frontDoorUrl:
   minio: minio.flame.test
 
 mlflow:
-  s3EndpointUrl: http://minio.flame.test
+  s3EndpointUrl: http://minio.flame.test:31109
   servicePort: "5000"
 
 servicePort:
