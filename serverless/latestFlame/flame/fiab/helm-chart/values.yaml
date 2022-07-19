@@ -111,6 +111,10 @@ servicePort:
 
 replicas: 1
 
+endpointports:
+  http: 80
+  https: 443
+
 # enable this in case a selfsigned cert is in use (for test only)
 # this holds true in fiab setting
 insecure: true

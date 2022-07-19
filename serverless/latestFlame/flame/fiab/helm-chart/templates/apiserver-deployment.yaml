@@ -34,7 +34,7 @@ spec:
       containers:
         - args:
             - --controller
-            - "http://{{ .Values.frontDoorUrl.controller }}:80"
+            - "http://{{ .Values.frontDoorUrl.controller }}:{{ .Values.endpointports.http }}"
           command: ["/usr/bin/apiserver"]
           image: {{ .Values.imageName }}:{{ .Values.imageTag }}
           imagePullPolicy: IfNotPresent
