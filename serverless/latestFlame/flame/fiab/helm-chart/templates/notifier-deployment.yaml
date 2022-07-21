@@ -35,6 +35,10 @@ spec:
         - args: []
           command: ["/usr/bin/notifier"]
           image: {{ .Values.imageName }}:{{ .Values.imageTag }}
+          resources:
+            requests:
+              cpu: 500m
+              memory: 500M
           imagePullPolicy: IfNotPresent
           name: {{ .Release.Name }}-notifier
           ports:
