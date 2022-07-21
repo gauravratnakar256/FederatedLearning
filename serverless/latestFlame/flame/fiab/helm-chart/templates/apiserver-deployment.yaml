@@ -25,7 +25,7 @@ spec:
     metadata:
       annotations:
         autoscaling.knative.dev/metric: rps  
-        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/minScale: "1"
         autoscaling.knative.dev/target: "8"
       labels:
         app: {{ .Release.Name }}-apiserver
