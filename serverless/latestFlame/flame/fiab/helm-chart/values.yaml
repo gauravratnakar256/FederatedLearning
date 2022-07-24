@@ -114,7 +114,8 @@ replicas: 1
 endpointports:
   http: 31117
   https: 32182
-
+  nginxhttps: 31972
+  nginxhttp: 31478
 # enable this in case a selfsigned cert is in use (for test only)
 # this holds true in fiab setting
 insecure: true

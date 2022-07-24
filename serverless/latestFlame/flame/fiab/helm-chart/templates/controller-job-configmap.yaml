@@ -36,7 +36,7 @@ data:
 
     endpoint:
       apiserver: https://{{ .Values.frontDoorUrl.apiserver }}:{{ .Values.endpointports.https }}
-      notifier: {{ .Values.frontDoorUrl.notifier }}:{{ .Values.endpointports.https }}
+      notifier: {{ .Values.frontDoorUrl.notifier }}:{{ .Values.endpointports.nginxhttps }}
 
     s3EndpointUrl: {{ .Values.mlflow.s3EndpointUrl }}
     accessKeyId: {{ (index .Values.minio.users 0).accessKey }}

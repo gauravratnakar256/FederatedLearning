@@ -15,27 +15,20 @@
 # SPDX-License-Identifier: Apache-2.0
 
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}-notifier
+    tier: backend
   name: {{ .Release.Name }}-notifier
   namespace: {{ .Release.Namespace }}
-
 spec:
-  replicas: {{ .Values.replicas }}
+  ports:
+    - name: notifier
+      protocol: TCP
+      port: {{ .Values.servicePort.notifier }}
+      targetPort: {{ .Values.servicePort.notifier }}
   selector:
-    matchLabels:
-      app: {{ .Release.Name }}-notifier
-  template:
-    metadata:
-      labels:
-        app: {{ .Release.Name }}-notifier
-    spec:
-      containers:
-        - args: []
-          command: ["/usr/bin/notifier"]
-          image: {{ .Values.imageName }}:{{ .Values.imageTag }}
-          imagePullPolicy: IfNotPresent
-          name: {{ .Release.Name }}-notifier
-          ports:
-            - containerPort: {{ .Values.servicePort.notifier }}
+    app: {{ .Release.Name }}-notifier
+  type: ClusterIP
