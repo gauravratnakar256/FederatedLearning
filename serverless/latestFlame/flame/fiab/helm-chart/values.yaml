@@ -85,6 +85,7 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
     cert-manager.io/cluster-issuer: selfsigned
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
   # In mlflow, selfsigned certificate raises SSLCertVerificationError
   # So, fiab env disable tls; tls can be enabled with a legitimate cert
   annotationsMlflow:
