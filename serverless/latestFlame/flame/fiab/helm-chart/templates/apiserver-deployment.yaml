@@ -30,7 +30,7 @@ spec:
       labels:
         app: {{ .Release.Name }}-apiserver
     spec:
-      containerConcurrency: 4
+      containerConcurrency: 200
       containers:
         - args:
             - --controller

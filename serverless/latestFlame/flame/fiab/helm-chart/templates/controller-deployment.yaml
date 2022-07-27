@@ -32,7 +32,7 @@ spec:
       labels:
         app: {{ .Release.Name }}-controller
     spec:
-      containerConcurrency: 4
+      containerConcurrency: 200
       containers:
         - args:
             {{ if .Values.insecure }}

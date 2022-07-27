@@ -32,7 +32,7 @@ spec:
       labels:
         app: {{ .Release.Name }}-mlflow
     spec:
-      containerConcurrency: 4
+      containerConcurrency: 200
       containers:
         - args:
             - "mlflow server --backend-store-uri postgresql://mlflow:mlflow@postgres/mlflow --default-artifact-root s3://mlruns --host 0.0.0.0"
