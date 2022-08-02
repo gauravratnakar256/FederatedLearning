@@ -100,7 +100,7 @@ frontDoorUrl:
   minio: minio.flame.test
 
 mlflow:
-  s3EndpointUrl: http://minio.flame.test:31117
+  s3EndpointUrl: http://minio.flame.test:32020
   servicePort: "5000"
 
 servicePort:
@@ -114,10 +114,10 @@ servicePort:
 replicas: 1
 
 endpointports:
-  http: 31117
-  https: 32182
-  nginxhttps: 30834
-  nginxhttp: 32686
+  http: 32020
+  https: 30376
+  nginxhttps: 32740
+  nginxhttp: 32262
 # enable this in case a selfsigned cert is in use (for test only)
 # this holds true in fiab setting
 insecure: true
