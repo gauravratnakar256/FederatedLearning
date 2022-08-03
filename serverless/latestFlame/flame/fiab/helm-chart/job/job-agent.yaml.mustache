@@ -6,7 +6,7 @@ metadata:
   name: {{ .Release.Namespace }}-agent-<% taskId %>
   namespace: {{ .Release.Namespace }}
 spec:
-  suspend: true
+  #suspend: true
   template:
     # activeDeadlineSeconds: <% maxWaitTime %>
     # ttlSecondsAfterFinished: 180 # supported from v1.21
