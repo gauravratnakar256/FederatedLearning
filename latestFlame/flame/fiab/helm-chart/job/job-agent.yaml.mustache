@@ -23,7 +23,7 @@ spec:
             {{ end }}
           command: ["/usr/bin/flamelet"]
           image: <% imageLoc %>
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: {{ .Release.Namespace }}-agent-<% taskId %>
 
           ports:
