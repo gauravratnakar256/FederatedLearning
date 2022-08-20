@@ -1,36 +1,34 @@
 {
-    "designId": "mnist",
-    "schemaVersion": "1",
-    "codeVersion": "1",
-    "dataSpec": {
-        "fromUser": {
-            "default": 0
-        },
-        "fromSystem": [
-            "62dca88e8d89ecd31eacab39"
-        ]
+  "designId": "mnist",
+  "schemaVersion": "1",
+  "codeVersion": "1",
+  "dataSpec": {
+    "fromUser": {
+      "default": 0
     },
-    "priority": "low",
-
-    "backend": "mqtt",
-    "maxRunTime": 1800,
-
-    "baseModel": {
-        "name": "",
-        "version": 0
-    },
-    "hyperparameters": {
-        "rounds": 5,
-        "batchSize": 32,
-        "learningRate": 0.01
-    },
-    "dependencies" : [
-        "numpy >= 1.2.0"
-    ],
-    "selector": {
-        "sort": "random",
-        "kwargs": {
-            "k": 1
-        }
+    "fromSystem": [
+      "62eabc5bb5c7b517025e8ba7"
+    ]
+  },
+  "priority": "low",
+  "backend": "mqtt",
+  "maxRunTime": 1800,
+  "baseModel": {
+    "name": "",
+    "version": 0
+  },
+  "hyperparameters": {
+    "rounds": 5,
+    "batchSize": 32,
+    "learningRate": 0.01
+  },
+  "dependencies": [
+    "numpy >= 1.2.0"
+  ],
+  "selector": {
+    "sort": "random",
+    "kwargs": {
+      "k": 1
     }
+  }
 }
