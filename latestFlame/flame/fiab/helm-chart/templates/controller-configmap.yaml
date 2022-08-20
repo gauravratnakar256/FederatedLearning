@@ -34,4 +34,4 @@ data:
           host: {{ .Values.broker.host }}
       registry:
         sort: {{ .Values.registry.sort }}
-        uri: {{ .Values.registry.uri }}
+        uri: {{ .Values.registry.uri }}:{{ .Values.endpointports.nginxhttp }}
