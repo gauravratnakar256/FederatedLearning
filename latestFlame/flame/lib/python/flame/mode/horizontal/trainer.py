@@ -88,10 +88,15 @@ class Trainer(Role, metaclass=ABCMeta):
         dict = channel.recv(end)
 
         i = 0
-        while i < 5 and dict is None:
+        while i < 5 :
             time.sleep(60)
             dict = channel.recv(end)
+            if dict is not None:
+                break
+
             i = i + 1
+
+        dict = channel.recv(end)
 
         for k, v in dict.items():
             if k == MessageType.WEIGHTS:
