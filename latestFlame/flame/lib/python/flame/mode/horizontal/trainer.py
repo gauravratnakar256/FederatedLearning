@@ -87,9 +87,7 @@ class Trainer(Role, metaclass=ABCMeta):
         logger.info("Aggregator ID: {end}")
 
         dict = channel.recv(end)
-
-        logger.info("Dict: {dict}")
-
+        
         for k, v in dict.items():
             if k == MessageType.WEIGHTS:
                 self.weights = v
