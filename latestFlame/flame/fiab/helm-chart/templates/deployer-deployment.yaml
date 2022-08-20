@@ -33,7 +33,7 @@ spec:
       containers:
         - args:
           - --apiserver
-          - "https://{{ .Values.frontDoorUrl.apiserver }}:443"
+          - "https://{{ .Values.frontDoorUrl.apiserver }}:{{ .Values.endpointports.nginxhttps }}"
           - --insecure
           command: ["/usr/bin/deployer"]
           image: {{ .Values.imageName }}:{{ .Values.imageTag }}
