@@ -84,9 +84,9 @@ class Trainer(Role, metaclass=ABCMeta):
 
         # one aggregator is sufficient
         end = channel.one_end()
-        logger.info("End ID: {end}")
+        logger.info("End ID: ", end)
 
-        
+
         dict = channel.recv(end)
 
         for k, v in dict.items():
