@@ -85,15 +85,10 @@ class Trainer(Role, metaclass=ABCMeta):
         # one aggregator is sufficient
         end = channel.one_end()
         logger.info("Aggregator ID: {end}")
-        dict = None
 
-        i = 0
-        while i < 5 :
-            dict = channel.recv(end)
-            if dict is not None:
-                break
-            time.sleep(60)
-            i = i + 1
+        dict = channel.recv(end)
+
+        logger.info("Dict: {dict}")
 
         for k, v in dict.items():
             if k == MessageType.WEIGHTS:
