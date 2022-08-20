@@ -73,7 +73,7 @@ broker:
 
 registry:
   sort: mlflow
-  uri: http://mlflow.flame.test
+  uri: http://flame-mlflow.flame.test
 
 ingress:
   ingressClassName: nginx
@@ -99,7 +99,7 @@ frontDoorUrl:
   mlflow: flame-mlflow.flame.test
 
 mlflow:
-  s3EndpointUrl: http://minio.flame.test
+  s3EndpointUrl: http://minio.flame.test:30947
   servicePort: "5000"
 
 servicePort:
