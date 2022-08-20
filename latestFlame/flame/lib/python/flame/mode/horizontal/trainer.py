@@ -85,6 +85,7 @@ class Trainer(Role, metaclass=ABCMeta):
         # one aggregator is sufficient
         end = channel.one_end()
         logger.info("Aggregator ID: {end}")
+        dict = None
 
         i = 0
         while i < 5 and dict is None:
