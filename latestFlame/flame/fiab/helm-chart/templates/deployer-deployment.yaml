@@ -37,5 +37,5 @@ spec:
           - --insecure
           command: ["/usr/bin/deployer"]
           image: {{ .Values.imageName }}:{{ .Values.imageTag }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: {{ .Release.Name }}-deployer
