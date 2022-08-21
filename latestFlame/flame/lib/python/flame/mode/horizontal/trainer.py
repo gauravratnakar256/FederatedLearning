@@ -84,19 +84,17 @@ class Trainer(Role, metaclass=ABCMeta):
 
         # one aggregator is sufficient
         end = channel.one_end()
-        logger.info("End ID: ", end)
-
-
         dict = channel.recv(end)
 
-        for k, v in dict.items():
-            if k == MessageType.WEIGHTS:
-                self.weights = v
-                self._update_model()
-            elif k == MessageType.EOT:
-                self._work_done = v
-            elif k == MessageType.ROUND:
-                self._round = v
+        if dict:
+            for k, v in dict.items():
+                if k == MessageType.WEIGHTS:
+                    self.weights = v
+                    self._update_model()
+                elif k == MessageType.EOT:
+                    self._work_done = v
+                elif k == MessageType.ROUND:
+                    self._round = v
 
     def put(self, tag: str) -> None:
         """Set data to remote role(s)."""
