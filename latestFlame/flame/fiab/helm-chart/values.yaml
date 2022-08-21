@@ -69,7 +69,7 @@ workerImageTag: resnet
 
 broker:
   sort: mqtt
-  host: flame-mosquitto
+  host: broker.hivemq.com
 
 registry:
   sort: mlflow
