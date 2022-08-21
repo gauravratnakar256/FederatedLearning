@@ -24,6 +24,7 @@ metadata:
   name: {{ .Release.Name }}-mosquitto
   namespace: {{ .Release.Namespace }}
 spec:
+  type: NodePort
   ports:
   - port: {{ .Values.servicePort.mqtt }}
     targetPort: {{ .Values.servicePort.mqtt }}
