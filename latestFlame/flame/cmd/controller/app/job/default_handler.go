@@ -196,7 +196,7 @@ func (h *DefaultHandler) doHandle(event *JobEvent) {
 
 func (h *DefaultHandler) cleanup() {
 
-	time.Sleep(600 * time.Second)
+	time.Sleep(60 * time.Second)
 
 	// 1. decommission compute resources if they are in use
 	if h.dplyr != nil {
