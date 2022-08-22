@@ -29,7 +29,6 @@ from ..role import Role
 from ..tasklet import Loop, Tasklet
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 TAG_FETCH = 'fetch'
 TAG_UPLOAD = 'upload'
@@ -85,7 +84,6 @@ class Trainer(Role, metaclass=ABCMeta):
 
         # one aggregator is sufficient
         end = channel.one_end()
-        logger.debug(f"Receiving weights from {end}")
         dict = channel.recv(end)
         for k, v in dict.items():
             if k == MessageType.WEIGHTS:

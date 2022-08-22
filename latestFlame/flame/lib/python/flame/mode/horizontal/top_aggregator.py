@@ -53,7 +53,6 @@ class TopAggregator(Role, metaclass=ABCMeta):
     def dataset(self):
         """
         Abstract attribute for datset.
-
         dataset's type is Dataset (in flame/dataset.py).
         """
 
@@ -82,8 +81,6 @@ class TopAggregator(Role, metaclass=ABCMeta):
         self.cache = Cache()
         self.optimizer = optimizer_provider.get(self.config.optimizer.sort,
                                                 **self.config.optimizer.kwargs)
-
-        logger.setLevel(logging.DEBUG)
 
         self._round = 1
         self._rounds = 1
@@ -130,7 +127,6 @@ class TopAggregator(Role, metaclass=ABCMeta):
                 # save training result from trainer in a disk cache
                 self.cache[end] = tres
 
-            logger.debug(f"After Cache")
         # optimizer conducts optimization (in this case, aggregation)
         global_weights = self.optimizer.do(self.cache, total)
         if global_weights is None:
@@ -140,10 +136,9 @@ class TopAggregator(Role, metaclass=ABCMeta):
 
         # set global weights
         self.weights = global_weights
-        logger.debug(f"Before Model Update")
+
         # update model with global weights
         self._update_model()
-        logger.debug(f"After Model Update")
 
     def put(self, tag: str) -> None:
         """Set data to remote role(s)."""
@@ -269,18 +264,18 @@ class TopAggregator(Role, metaclass=ABCMeta):
 
             task_save_params = Tasklet(self.save_params)
 
-            #task_save_model = Tasklet(self.save_model)
+            task_save_model = Tasklet(self.save_model)
 
         # create a loop object with loop exit condition function
         loop = Loop(loop_check_fn=lambda: self._work_done)
         task_internal_init >> task_load_data >> task_init >> loop(
             task_put >> task_get >> task_train >> task_eval >> task_analysis >>
             task_save_metrics >> task_increment_round
-        ) >> task_end_of_training >> task_save_params
+        ) >> task_end_of_training >> task_save_params >> task_save_model
 
     def run(self) -> None:
         """Run role."""
-        time.sleep(15)
+        time.Sleep(30 * time.Second)
         self.composer.run()
 
     @classmethod
