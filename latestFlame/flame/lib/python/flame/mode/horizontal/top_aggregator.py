@@ -53,6 +53,7 @@ class TopAggregator(Role, metaclass=ABCMeta):
     def dataset(self):
         """
         Abstract attribute for datset.
+
         dataset's type is Dataset (in flame/dataset.py).
         """
 

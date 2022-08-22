@@ -43,7 +43,6 @@ END_STATUS_OFF = 'offline'
 MQTT_TIME_WAIT = 10  # 10 sec
 MIN_CHECK_PERIOD = 1  # 1 sec
 MQTT_LOOP_CHECK_PERIOD = 1  # 1 sec
-TOPIC_SEP = "/"
 
 logger = logging.getLogger(__name__)
 
@@ -61,13 +60,19 @@ class MqttQoS(IntEnum):
 class MqttBackend(AbstractBackend):
     """MqttBackend class. It only allows a singleton instance."""
 
+    # def __new__(cls):
+    #     """Create an instance if not exist."""
+    #     if cls._instance is None:
+    #         logger.info('creating an MqttBackend instance')
+    #         cls._instance = super(MqttBackend, cls).__new__(cls)
+    #     return cls._instance
+
     def __init__(self):
         """Initialize an instance."""
         # variables for class initialization
         self._instance = None
         self._initialized = False
-        # queue to inform channel manager of backend's events
-        self._eventq = None
+        self._eventq = None  # inform channel manager of events occurring at backend
         self._loop = None
 
         # variables for functionality
@@ -145,15 +150,15 @@ class MqttBackend(AbstractBackend):
             logger.error('failed to set up mqtt client')
             raise ConnectionError
 
-    def _topics_for_notify(self, channel: Channel) -> list[str]:
-        notify_topics = list()
-
+    def join(self, channel: Channel):
+        """Join a channel by subscribing to topics."""
         # format for broadcast topic to subscribe:
         #   /flame/<job_id>/<channel_name>/<groupby>/broadcast/<other_role>/+
         # format for unicast topic to subscribe:
         #  /flame/<job_id>/<channel_name>/<groupby>/unicast/<other_role>/+/<my_role>/<my_end_id>
+        sep = '/'
         for comm_type in CommType:
-            topic = TOPIC_SEP.join([
+            topic = sep.join([
                 MQTT_TOPIC_PREFIX,
                 self._job_id,
                 channel.name(),
@@ -164,29 +169,12 @@ class MqttBackend(AbstractBackend):
             ])
 
             if comm_type == CommType.UNICAST:
-                topic = TOPIC_SEP.join([topic, channel.my_role(), self._id])
+                topic = sep.join([topic, channel.my_role(), self._id])
 
-            notify_topics.append(topic)
-
-        return notify_topics
-
-    def join(self, channel: Channel) -> None:
-        """Join a channel by subscribing to topics."""
-        for topic in self._topics_for_notify(channel):
             self.subscribe(topic)
 
-        # notify after subscription to topics is finished
-        self.notify(channel.name(), msg_pb2.NotifyType.JOIN)
-
-    def leave(self, channel: Channel) -> None:
-        """Leave a channel.
-        Send leave notify message and unsubscribe from topics.
-        """
-        self.notify(channel.name(), msg_pb2.NotifyType.LEAVE)
-
-        # unsubscribe from topics after notify is finished
-        for topic in self._topics_for_notify(channel):
-            self.unsubscribe(topic)
+        # notify after subscription to topics are finished
+        self.notify(channel.name())
 
     def _handle_health_message(self, message):
         health_data = str(message.payload.decode("utf-8"))
@@ -217,18 +205,13 @@ class MqttBackend(AbstractBackend):
 
         channel = self._channels[msg.channel_name]
 
-        if msg.type == msg_pb2.NotifyType.JOIN and not channel.has(msg.end_id):
+        if not channel.has(msg.end_id):
             # this is the first time to see this end,
             # so let's notify my presence to the end
             logger.debug('acknowledge notification')
-            self.notify(msg.channel_name, msg_pb2.NotifyType.JOIN)
+            self.notify(msg.channel_name)
 
-            # add end to the channel
-            await channel.add(msg.end_id)
-        elif msg.type == msg_pb2.NotifyType.LEAVE:
-            # it's sufficient to remove end from channel
-            # no extra action (e.g., unsubscribe) needed
-            await channel.remove(msg.end_id)
+        await channel.add(msg.end_id)
 
     async def _handle_data(self, any_msg: Any) -> None:
         msg = msg_pb2.Data()
@@ -315,7 +298,6 @@ class MqttBackend(AbstractBackend):
         self._rx_deque.append(self._loop.create_future())
 
     def assemble_chunks(self, msg: msg_pb2.Data) -> Tuple[bytes, bool]:
-        """Assemble message chunks to build a whole message."""
         if msg.end_id not in self._msg_chunks:
             self._msg_chunks[msg.end_id] = ChunkStore()
 
@@ -332,18 +314,12 @@ class MqttBackend(AbstractBackend):
         else:
             return b'', False
 
-    def subscribe(self, topic) -> None:
+    def subscribe(self, topic):
         """Subscribe to a topic."""
         logger.debug(f'subscribe topic: {topic}')
         self._mqtt_client.subscribe(topic, qos=MqttQoS.EXACTLY_ONCE)
 
-    def unsubscribe(self, topic) -> None:
-        """Unsubscribe from a topic."""
-        logger.debug(f'unsubscribe topic: {topic}')
-        self._mqtt_client.unsubscribe(topic)
-
-    def notify(self, channel_name, notify_type) -> bool:
-        """Broadcast a notify message to a channel."""
+    def notify(self, channel_name):
         if channel_name not in self._channels:
             logger.debug(f'channel {channel_name} not found')
             return False
@@ -355,7 +331,6 @@ class MqttBackend(AbstractBackend):
         msg = msg_pb2.Notify()
         msg.end_id = self._id
         msg.channel_name = channel_name
-        msg.type = notify_type
 
         any = Any()
         any.Pack(msg)
@@ -396,8 +371,10 @@ class MqttBackend(AbstractBackend):
                       other_id: str = "",
                       comm_type=CommType.BROADCAST):
         """Return a proper topic for a given channel."""
+        sep = '/'
+
         if comm_type == CommType.BROADCAST:
-            topic = TOPIC_SEP.join([
+            topic = sep.join([
                 MQTT_TOPIC_PREFIX,
                 ch.job_id(),
                 ch.name(),
@@ -407,7 +384,7 @@ class MqttBackend(AbstractBackend):
                 self._id,
             ])
         elif comm_type == CommType.UNICAST:
-            topic = TOPIC_SEP.join([
+            topic = sep.join([
                 MQTT_TOPIC_PREFIX,
                 ch.job_id(),
                 ch.name(),
@@ -425,6 +402,7 @@ class MqttBackend(AbstractBackend):
 
     async def _tx_task(self, channel, end_id, comm_type: CommType):
         """Conducts data transmission in a loop.
+
         _tx_task() must be created per tx queue right after end_id is added to
         channel (e.g., channel.add(end_id)).
         In case of a tx task for broadcast queue, a broadcaset queue must be
@@ -482,12 +460,12 @@ class MqttBackend(AbstractBackend):
 
 class AsyncioHelper:
     """Asyncio helper class.
+
     Asyncio MQTT client example from
     https://github.com/eclipse/paho.mqtt.python/blob/master/examples/loop_asyncio.py
     """
 
     def __init__(self, loop, client):
-        """Initialize AsyncioHelper instance."""
         self.loop = loop
         self.client = client
         self.client.on_socket_open = self.on_socket_open
@@ -496,7 +474,6 @@ class AsyncioHelper:
         self.client.on_socket_unregister_write = self.on_socket_unregister_write
 
     def on_socket_open(self, client, userdata, sock):
-        """Call a callback function when socket opens."""
         logger.debug('Socket opened')
 
         def cb():
@@ -507,13 +484,11 @@ class AsyncioHelper:
         self.misc = self.loop.create_task(self.misc_loop())
 
     def on_socket_close(self, client, userdata, sock):
-        """Call a callback function when socket closes."""
         logger.debug('Socket closed')
         self.loop.remove_reader(sock)
         self.misc.cancel()
 
     def on_socket_register_write(self, client, userdata, sock):
-        """Watch socket's writability."""
         logger.debug('Watching socket for writability.')
 
         def cb():
@@ -523,12 +498,10 @@ class AsyncioHelper:
         self.loop.add_writer(sock, cb)
 
     def on_socket_unregister_write(self, client, userdata, sock):
-        """Stop watching socket's writability."""
         logger.debug('Stop watching socket for writability.')
         self.loop.remove_writer(sock)
 
     async def misc_loop(self):
-        """Start misc loop."""
         logger.debug('misc_loop started')
         while self.client.loop_misc() == mqtt.MQTT_ERR_SUCCESS:
             try:
