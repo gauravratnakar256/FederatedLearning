@@ -61,7 +61,7 @@ class Trainer(Role, metaclass=ABCMeta):
         self._work_done = False
 
         logger.setLevel(logging.DEBUG)
-        
+
         self.framework = get_ml_framework_in_use()
         if self.framework == MLFramework.UNKNOWN:
             raise NotImplementedError(
@@ -86,6 +86,7 @@ class Trainer(Role, metaclass=ABCMeta):
 
         # one aggregator is sufficient
         end = channel.one_end()
+        logger.debug(f"Receiving weights from {end}")
         dict = channel.recv(end)
         for k, v in dict.items():
             if k == MessageType.WEIGHTS:
