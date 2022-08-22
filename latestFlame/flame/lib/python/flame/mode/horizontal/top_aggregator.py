@@ -34,6 +34,7 @@ from ..role import Role
 from ..tasklet import Loop, Tasklet
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 TAG_DISTRIBUTE = 'distribute'
 TAG_AGGREGATE = 'aggregate'
