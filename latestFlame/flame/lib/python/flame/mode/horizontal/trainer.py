@@ -29,6 +29,7 @@ from ..role import Role
 from ..tasklet import Loop, Tasklet
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 TAG_FETCH = 'fetch'
 TAG_UPLOAD = 'upload'
@@ -59,8 +60,6 @@ class Trainer(Role, metaclass=ABCMeta):
 
         self._round = 1
         self._work_done = False
-
-        logger.setLevel(logging.DEBUG)
 
         self.framework = get_ml_framework_in_use()
         if self.framework == MLFramework.UNKNOWN:

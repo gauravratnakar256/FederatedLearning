@@ -130,6 +130,7 @@ class TopAggregator(Role, metaclass=ABCMeta):
                 # save training result from trainer in a disk cache
                 self.cache[end] = tres
 
+            logger.debug(f"After Cache")
         # optimizer conducts optimization (in this case, aggregation)
         global_weights = self.optimizer.do(self.cache, total)
         if global_weights is None:
@@ -139,9 +140,10 @@ class TopAggregator(Role, metaclass=ABCMeta):
 
         # set global weights
         self.weights = global_weights
-
+        logger.debug(f"Before Model Update")
         # update model with global weights
         self._update_model()
+        logger.debug(f"After Model Update")
 
     def put(self, tag: str) -> None:
         """Set data to remote role(s)."""
@@ -278,7 +280,7 @@ class TopAggregator(Role, metaclass=ABCMeta):
 
     def run(self) -> None:
         """Run role."""
-        time.sleep(60)
+        time.sleep(15)
         self.composer.run()
 
     @classmethod
