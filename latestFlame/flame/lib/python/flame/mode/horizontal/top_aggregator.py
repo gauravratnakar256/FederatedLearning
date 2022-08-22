@@ -275,7 +275,6 @@ class TopAggregator(Role, metaclass=ABCMeta):
 
     def run(self) -> None:
         """Run role."""
-        time.Sleep(30 * time.Second)
         self.composer.run()
 
     @classmethod
