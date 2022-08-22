@@ -269,14 +269,14 @@ class TopAggregator(Role, metaclass=ABCMeta):
 
             task_save_params = Tasklet(self.save_params)
 
-            task_save_model = Tasklet(self.save_model)
+            #task_save_model = Tasklet(self.save_model)
 
         # create a loop object with loop exit condition function
         loop = Loop(loop_check_fn=lambda: self._work_done)
         task_internal_init >> task_load_data >> task_init >> loop(
             task_put >> task_get >> task_train >> task_eval >> task_analysis >>
             task_save_metrics >> task_increment_round
-        ) >> task_end_of_training >> task_save_params >> task_save_model
+        ) >> task_end_of_training >> task_save_params
 
     def run(self) -> None:
         """Run role."""
