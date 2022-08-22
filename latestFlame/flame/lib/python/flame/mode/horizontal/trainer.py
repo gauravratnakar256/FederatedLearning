@@ -60,6 +60,8 @@ class Trainer(Role, metaclass=ABCMeta):
         self._round = 1
         self._work_done = False
 
+        logger.setLevel(logging.DEBUG)
+        
         self.framework = get_ml_framework_in_use()
         if self.framework == MLFramework.UNKNOWN:
             raise NotImplementedError(

@@ -83,6 +83,8 @@ class TopAggregator(Role, metaclass=ABCMeta):
         self.optimizer = optimizer_provider.get(self.config.optimizer.sort,
                                                 **self.config.optimizer.kwargs)
 
+        logger.setLevel(logging.DEBUG)
+
         self._round = 1
         self._rounds = 1
         if 'rounds' in self.config.hyperparameters:
@@ -218,7 +220,7 @@ class TopAggregator(Role, metaclass=ABCMeta):
         """Save model in a model registry."""
         if self.model:
             model_name = f"{self.config.job.name}-{self.config.job.job_id}"
-            #self.registry_client.save_model(model_name, self.model)
+            self.registry_client.save_model(model_name, self.model)
 
     def update_metrics(self, metrics: dict[str, float]):
         """Update metrics."""
