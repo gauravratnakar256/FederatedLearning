@@ -34,7 +34,6 @@ from ..role import Role
 from ..tasklet import Loop, Tasklet
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 TAG_DISTRIBUTE = 'distribute'
 TAG_AGGREGATE = 'aggregate'
@@ -160,17 +159,6 @@ class TopAggregator(Role, metaclass=ABCMeta):
 
         # before distributing weights, update it from global model
         self._update_weights()
-
-        #Print model size
-        param_size = 0
-        for param in self.model.parameters():
-            param_size += param.nelement() * param.element_size()
-        buffer_size = 0
-        for buffer in self.model.buffers():
-            buffer_size += buffer.nelement() * buffer.element_size()
-
-        size_all_mb = (param_size + buffer_size) / 1024**2
-        logger.debug('model size: {:.3f}MB'.format(size_all_mb))
 
         # send out global model parameters to trainers
         for end in channel.ends():

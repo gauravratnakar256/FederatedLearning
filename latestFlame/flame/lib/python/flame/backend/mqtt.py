@@ -40,7 +40,7 @@ END_STATUS_OFF = 'offline'
 # wait time of 10 sec
 # clean up resources allocated for terminated end
 # if no message arrives after the wait time
-MQTT_TIME_WAIT = 90  # 10 sec
+MQTT_TIME_WAIT = 10  # 10 sec
 MIN_CHECK_PERIOD = 1  # 1 sec
 MQTT_LOOP_CHECK_PERIOD = 1  # 1 sec
 
