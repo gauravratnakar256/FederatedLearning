@@ -107,29 +107,36 @@ class TopAggregator(Role, metaclass=ABCMeta):
 
         total = 0
         # receive local model parameters from trainers
+        logger.info("Started Aggregation Process")
         for end in channel.ends():
             logger.debug(f"waiting to receive data from {end}")
             dict = channel.recv(end)
             if not dict:
                 logger.debug(f"No data received from {end}")
                 continue
-
+            logger.info(f"Adding result from {end}")
             for k, v in dict.items():
                 if k == MessageType.WEIGHTS:
                     weights = v
                 elif k == MessageType.DATASET_SIZE:
                     count = v
                     total += count
+            logger.info(f"Added result from {end}")
+            
 
             logger.debug(f"{end}'s parameters trained with {count} samples")
 
             if weights is not None:
                 tres = TrainResult(weights, count)
                 # save training result from trainer in a disk cache
+                logger.info(f"Adding {end} weights in cache")
                 self.cache[end] = tres
+                logger.info(f"Added {end} weights in cache")
 
         # optimizer conducts optimization (in this case, aggregation)
+        logger.info(f"Snding weights to optimizer")
         global_weights = self.optimizer.do(self.cache, total)
+        logger.info(f"Aggrgation process Complete")
         if global_weights is None:
             logger.debug("failed model aggregation")
             time.sleep(1)
@@ -160,10 +167,12 @@ class TopAggregator(Role, metaclass=ABCMeta):
         # before distributing weights, update it from global model
         self._update_weights()
 
+        logger.info(f"Started distribution process")
         # send out global model parameters to trainers
         for end in channel.ends():
             logger.debug(f"sending weights to {end}")
             channel.send(end, {MessageType.WEIGHTS: self.weights, MessageType.ROUND: self._round})
+        logger.info(f"Distribution process complete")
 
     def inform_end_of_training(self) -> None:
         """Inform all the trainers that the training is finished."""
