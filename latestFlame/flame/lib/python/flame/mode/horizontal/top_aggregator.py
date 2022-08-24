@@ -109,7 +109,7 @@ class TopAggregator(Role, metaclass=ABCMeta):
         # receive local model parameters from trainers
         logger.info("Started Aggregation Process")
         for end in channel.ends():
-            logger.debug(f"waiting to receive data from {end}")
+            logger.info(f"waiting to receive data from {end}")
             dict = channel.recv(end)
             if not dict:
                 logger.debug(f"No data received from {end}")
