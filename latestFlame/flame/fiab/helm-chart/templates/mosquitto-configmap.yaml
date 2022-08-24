@@ -27,6 +27,6 @@ data:
     persistence true
     persistence_location /mosquitto/data/
     log_dest file /mosquitto/log/mosquitto.log
-    log_type debug
+    max_queued_messages 0
 
 
