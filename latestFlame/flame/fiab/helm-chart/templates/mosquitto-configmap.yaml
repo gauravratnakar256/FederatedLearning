@@ -24,3 +24,7 @@ data:
   mosquitto.conf: |
     allow_anonymous true
     listener 1883
+    log_type error
+    log_type warning
+    log_type notice
+    log_type information
