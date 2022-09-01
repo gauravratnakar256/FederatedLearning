@@ -110,7 +110,7 @@ class TopAggregator(Role, metaclass=ABCMeta):
         # receive local model parameters from trainers
         logger.info(f"Started Aggregation Process for round {self._round}")
         start = hwcounter.count()
-        start_time = time.process_time()
+        start_time = time.process_time_ns()
         for end in channel.ends():
             #logger.info(f"waiting to receive data from {end}")
             dict = channel.recv(end)
@@ -134,18 +134,18 @@ class TopAggregator(Role, metaclass=ABCMeta):
                 self.cache[end] = tres
                 
         elapsed = hwcounter.count_end() - start
-        timerequired = time.process_time() - start_time
+        timerequired = time.process_time_ns() - start_time
         logger.info(f'Number of cycles for getting weights from trainers: {elapsed}')
         logger.info(f'Time required for getting weights from trainers: {timerequired}')
 
         # optimizer conducts optimization (in this case, aggregation)
         logger.info(f"Snding weights to optimizer")
-        start_time = time.process_time()
+        start_time = time.process_time_ns()
         start = hwcounter.count()
 
         global_weights = self.optimizer.do(self.cache, total)
         elapsed = hwcounter.count_end() - start
-        timerequired = time.process_time() - start_time
+        timerequired = time.process_time_ns() - start_time
 
         logger.info(f'Number of cycles for performing aggregation: {elapsed}')
         logger.info(f'Time required for performing aggregation: {timerequired}')
@@ -182,7 +182,7 @@ class TopAggregator(Role, metaclass=ABCMeta):
         self._update_weights()
 
         logger.info(f"Started distribution process")
-        start_time = time.process_time()
+        start_time = time.process_time_ns()
         start = hwcounter.count()
         # send out global model parameters to trainers
         for end in channel.ends():
@@ -190,7 +190,7 @@ class TopAggregator(Role, metaclass=ABCMeta):
             channel.send(end, {MessageType.WEIGHTS: self.weights, MessageType.ROUND: self._round})
         
         elapsed = hwcounter.count_end() - start
-        timerequired = time.process_time() - start_time
+        timerequired = time.process_time_ns() - start_time
         logger.info(f'Number of cycles for distributing weights to trainers: {elapsed}')
         logger.info(f'Time required for distributing weights to trainers: {timerequired}')
         logger.info(f"Distribution process complete")
