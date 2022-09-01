@@ -63,9 +63,9 @@ minio:
       - minio.flame.test
 
 imageName: gaurav256/flame
-imageTag: resnet
+imageTag: test
 workerImageName: gaurav256/flame
-workerImageTag: resnet
+workerImageTag: test
 
 broker:
   sort: mqtt
