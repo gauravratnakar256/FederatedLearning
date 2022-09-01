@@ -18,7 +18,7 @@
 import logging
 import time
 
-from hwcounter import count, count_end
+import hwcounter
 from diskcache import Cache
 
 from ...channel_manager import ChannelManager
@@ -109,7 +109,7 @@ class TopAggregator(Role, metaclass=ABCMeta):
         total = 0
         # receive local model parameters from trainers
         logger.info(f"Started Aggregation Process for round {self._round}")
-        start = count()
+        start = hwcounter.count()
         for end in channel.ends():
             #logger.info(f"waiting to receive data from {end}")
             dict = channel.recv(end)
@@ -132,15 +132,15 @@ class TopAggregator(Role, metaclass=ABCMeta):
                 # save training result from trainer in a disk cache
                 self.cache[end] = tres
                 
-        elapsed = count_end() - start
+        elapsed = hwcounter.count_end() - start
         logger.info(f'Number of cycles for getting weights from trainers: {elapsed}')
 
         # optimizer conducts optimization (in this case, aggregation)
         logger.info(f"Snding weights to optimizer")
-        start = count()
+        start = hwcounter.count()
 
         global_weights = self.optimizer.do(self.cache, total)
-        elapsed = count_end() - start
+        elapsed = hwcounter.count_end() - start
 
         logger.info(f'Number of cycles for performing aggregation: {elapsed}')
         logger.info(f"Aggrgation process Complete")
@@ -176,13 +176,13 @@ class TopAggregator(Role, metaclass=ABCMeta):
         self._update_weights()
 
         logger.info(f"Started distribution process")
-        start = count()
+        start = hwcounter.count()
         # send out global model parameters to trainers
         for end in channel.ends():
             logger.debug(f"sending weights to {end}")
             channel.send(end, {MessageType.WEIGHTS: self.weights, MessageType.ROUND: self._round})
         
-        elapsed = count_end() - start
+        elapsed = hwcounter.count_end() - start
         logger.info(f'Number of cycles for distributing weights to trainers: {elapsed}')
         logger.info(f"Distribution process complete")
 
