@@ -18,6 +18,7 @@
 import logging
 import time
 
+from hwcounter import count, count_end
 from diskcache import Cache
 
 from ...channel_manager import ChannelManager
@@ -107,36 +108,43 @@ class TopAggregator(Role, metaclass=ABCMeta):
 
         total = 0
         # receive local model parameters from trainers
-        logger.info("Started Aggregation Process")
+        logger.info(f"Started Aggregation Process for round {self._round}")
+        start = count()
         for end in channel.ends():
-            logger.info(f"waiting to receive data from {end}")
+            #logger.info(f"waiting to receive data from {end}")
             dict = channel.recv(end)
             if not dict:
                 logger.debug(f"No data received from {end}")
                 continue
-            logger.info(f"Adding result from {end}")
+            #logger.info(f"Adding result from {end}")
             for k, v in dict.items():
                 if k == MessageType.WEIGHTS:
                     weights = v
                 elif k == MessageType.DATASET_SIZE:
                     count = v
                     total += count
-            logger.info(f"Added result from {end}")
-            
+            #logger.info(f"Added result from {end}")
 
             logger.debug(f"{end}'s parameters trained with {count} samples")
 
             if weights is not None:
                 tres = TrainResult(weights, count)
                 # save training result from trainer in a disk cache
-                logger.info(f"Adding {end} weights in cache")
                 self.cache[end] = tres
-                logger.info(f"Added {end} weights in cache")
+                
+        elapsed = count_end() - start
+        logger.info(f'Number of cycles for getting weights from trainers: {elapsed}')
 
         # optimizer conducts optimization (in this case, aggregation)
         logger.info(f"Snding weights to optimizer")
+        start = count()
+
         global_weights = self.optimizer.do(self.cache, total)
+        elapsed = count_end() - start
+
+        logger.info(f'Number of cycles for performing aggregation: {elapsed}')
         logger.info(f"Aggrgation process Complete")
+
         if global_weights is None:
             logger.debug("failed model aggregation")
             time.sleep(1)
@@ -168,10 +176,14 @@ class TopAggregator(Role, metaclass=ABCMeta):
         self._update_weights()
 
         logger.info(f"Started distribution process")
+        start = count()
         # send out global model parameters to trainers
         for end in channel.ends():
             logger.debug(f"sending weights to {end}")
             channel.send(end, {MessageType.WEIGHTS: self.weights, MessageType.ROUND: self._round})
+        
+        elapsed = count_end() - start
+        logger.info(f'Number of cycles for distributing weights to trainers: {elapsed}')
         logger.info(f"Distribution process complete")
 
     def inform_end_of_training(self) -> None:

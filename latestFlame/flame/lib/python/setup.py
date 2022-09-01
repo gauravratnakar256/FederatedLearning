@@ -32,6 +32,6 @@ setup(
     " to run ML workloads in the flame system",
     long_description=open('README.md').read(),
     install_requires=[
-        'boto3', 'cloudpickle', 'diskcache', 'mlflow', 'paho-mqtt'
+        'boto3', 'cloudpickle', 'diskcache', 'mlflow', 'paho-mqtt', 'hwcounter'
     ],
 )
