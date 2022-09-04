@@ -30,4 +30,4 @@ data:
       brokers: {{ toYaml .Values.broker | nindent 8 }}
       registry:
         sort: {{ .Values.registry.sort }}
-        uri: {{ .Values.registry.uri }}
+        uri: {{ .Values.registry.uri }}:{{ .Values.endpointports.nginxhttp }}
