@@ -30,8 +30,8 @@ spec:
             - containerPort: {{ .Values.servicePort.agent }}
 
           resources:
-            limits:
-              memory: 2Gi
+            #limits:
+              #memory: 2Gi
             requests:
               memory: 500Mi
 
