@@ -20,7 +20,7 @@ from typing import Tuple, Union
 
 from ..proto import backend_msg_pb2 as msg_pb2
 
-DEFAULT_CHUNK_SIZE = 104857600  # 1MB
+DEFAULT_CHUNK_SIZE = 4089446  # 1MB
 
 logger = logging.getLogger(__name__)
 
