@@ -19,6 +19,7 @@ import asyncio
 import logging
 import socket
 import time
+import traceback
 from typing import AsyncIterable, Iterable, Tuple
 
 import grpc
@@ -398,6 +399,7 @@ class PointToPointBackend(AbstractBackend):
                 await self.send_chunks(end_id, channel.name(), data)
             except Exception as ex:
                 ex_name = type(ex).__name__
+                logger.debug(traceback.format_exc())
                 logger.debug(f"An exception of type {ex_name} occurred")
 
                 self._cleanup_end(end_id)
