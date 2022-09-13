@@ -58,7 +58,8 @@ minio:
   ingress:
     enabled: true
     ingressClassName: nginx
-    annotations: {}
+    annotations: 
+      nginx.ingress.kubernetes.io/proxy-body-size: 512m
     hosts:
       - minio.flame.test
 
@@ -91,6 +92,7 @@ ingress:
   # So, fiab env disable tls; tls can be enabled with a legitimate cert
   annotationsMlflow:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
 
 frontDoorUrl:
   apiserver: flame-apiserver.flame.test
