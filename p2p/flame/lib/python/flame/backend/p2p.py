@@ -19,7 +19,6 @@ import asyncio
 import logging
 import socket
 import time
-import traceback
 from typing import AsyncIterable, Iterable, Tuple
 
 import grpc
@@ -39,6 +38,8 @@ ENDPOINT_TOKEN_LEN = 2
 HEART_BEAT_DURATION = 30  # for metaserver
 QUEUE_WAIT_TIME = 10  # 10 second
 EXTRA_WAIT_TIME = QUEUE_WAIT_TIME / 2
+
+GRPC_MAX_MESSAGE_LENGTH = 1073741824  # 1GB
 
 
 class BackendServicer(msg_pb2_grpc.BackendRouteServicer):
@@ -84,7 +85,6 @@ class BackendServicer(msg_pb2_grpc.BackendRouteServicer):
 
 class PointToPointBackend(AbstractBackend):
     """PointToPointBackend class.
-
     PointToPoint backend is EXPERIMENTAL.
     """
 
@@ -128,7 +128,10 @@ class PointToPointBackend(AbstractBackend):
         self._initialized = True
 
     async def _setup_server(self):
-        server = grpc.aio.server()
+        server = grpc.aio.server(options=[('grpc.max_send_message_length',
+                                           GRPC_MAX_MESSAGE_LENGTH),
+                                          ('grpc.max_receive_message_length',
+                                           GRPC_MAX_MESSAGE_LENGTH)])
         msg_pb2_grpc.add_BackendRouteServicer_to_server(
             BackendServicer(self), server)
 
@@ -220,7 +223,11 @@ class PointToPointBackend(AbstractBackend):
                 await asyncio.sleep(HEART_BEAT_DURATION)
 
     async def _connect_and_notify(self, endpoint: str, ch_name: str) -> None:
-        grpc_ch = grpc.aio.insecure_channel(endpoint)
+        grpc_ch = grpc.aio.insecure_channel(
+            endpoint,
+            options=[('grpc.max_send_message_length', GRPC_MAX_MESSAGE_LENGTH),
+                     ('grpc.max_receive_message_length',
+                      GRPC_MAX_MESSAGE_LENGTH)])
         stub = msg_pb2_grpc.BackendRouteStub(grpc_ch)
 
         await self.notify(ch_name, msg_pb2.NotifyType.JOIN, stub, grpc_ch)
@@ -331,7 +338,6 @@ class PointToPointBackend(AbstractBackend):
 
     async def _tx_task(self, channel, end_id, comm_type: CommType):
         """Conducts data transmission in a loop.
-
         _tx_task() must be created per tx queue right after end_id is added to
         channel (e.g., channel.add(end_id)).
         In case of a tx task for broadcast queue, a broadcaset queue must be
@@ -344,7 +350,6 @@ class PointToPointBackend(AbstractBackend):
 
     async def _broadcast_task(self, channel):
         """Broadcast messages.
-
         p2p backend doesn't support broadcast natively.
         broadcast is simply a collection of unicast transmissions.
         """
@@ -361,7 +366,7 @@ class PointToPointBackend(AbstractBackend):
                     ex_name = type(ex).__name__
                     logger.debug(f"An exception of type {ex_name} occurred")
 
-                    self._cleanup_end(end_id)
+                    await self._cleanup_end(end_id)
             txq.task_done()
 
     async def _unicast_task(self, channel, end_id):
@@ -399,10 +404,9 @@ class PointToPointBackend(AbstractBackend):
                 await self.send_chunks(end_id, channel.name(), data)
             except Exception as ex:
                 ex_name = type(ex).__name__
-                logger.debug(traceback.format_exc())
                 logger.debug(f"An exception of type {ex_name} occurred")
 
-                self._cleanup_end(end_id)
+                await self._cleanup_end(end_id)
                 txq.task_done()
                 # This break ends a tx_task for end_id
                 break
@@ -469,7 +473,7 @@ class PointToPointBackend(AbstractBackend):
 
         # grpc channel is unavailable
         # so, clean up an entry for end_id from _endpoints dict
-        self._cleanup_end(end_id)
+        await self._cleanup_end(end_id)
 
         logger.debug(f"cleaned up {end_id} info from _endpoints")
 
