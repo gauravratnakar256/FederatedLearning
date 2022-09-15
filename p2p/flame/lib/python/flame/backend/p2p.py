@@ -85,6 +85,7 @@ class BackendServicer(msg_pb2_grpc.BackendRouteServicer):
 
 class PointToPointBackend(AbstractBackend):
     """PointToPointBackend class.
+
     PointToPoint backend is EXPERIMENTAL.
     """
 
@@ -338,6 +339,7 @@ class PointToPointBackend(AbstractBackend):
 
     async def _tx_task(self, channel, end_id, comm_type: CommType):
         """Conducts data transmission in a loop.
+
         _tx_task() must be created per tx queue right after end_id is added to
         channel (e.g., channel.add(end_id)).
         In case of a tx task for broadcast queue, a broadcaset queue must be
@@ -350,6 +352,7 @@ class PointToPointBackend(AbstractBackend):
 
     async def _broadcast_task(self, channel):
         """Broadcast messages.
+
         p2p backend doesn't support broadcast natively.
         broadcast is simply a collection of unicast transmissions.
         """
