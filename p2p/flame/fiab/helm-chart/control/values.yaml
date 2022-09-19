@@ -59,6 +59,9 @@ minio:
     enabled: true
     ingressClassName: nginx
     annotations: 
+      nginx.ingress.kubernetes.io/proxy-connect-timeout: "360"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "360"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "360"
       nginx.ingress.kubernetes.io/proxy-body-size: 512m
     hosts:
       - minio.flame.test
@@ -84,15 +87,24 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     cert-manager.io/cluster-issuer: selfsigned
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "360"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "360"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "360"
   annotationsGrpc:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
     cert-manager.io/cluster-issuer: selfsigned
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "360"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "360"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "360"
   # In mlflow, selfsigned certificate raises SSLCertVerificationError
   # So, fiab env disable tls; tls can be enabled with a legitimate cert
   annotationsMlflow:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "360"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "360"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "360"
 
 frontDoorUrl:
   apiserver: flame-apiserver.flame.test
