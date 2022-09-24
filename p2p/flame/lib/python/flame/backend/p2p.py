@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 ENDPOINT_TOKEN_LEN = 2
 HEART_BEAT_DURATION = 30  # for metaserver
-QUEUE_WAIT_TIME = 10  # 10 second
+QUEUE_WAIT_TIME = 60  # 10 second
 EXTRA_WAIT_TIME = QUEUE_WAIT_TIME / 2
 
 GRPC_MAX_MESSAGE_LENGTH = 1073741824  # 1GB
