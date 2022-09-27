@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 ENDPOINT_TOKEN_LEN = 2
 HEART_BEAT_DURATION = 30  # for metaserver
-QUEUE_WAIT_TIME = 60  # 10 second
+QUEUE_WAIT_TIME = 10  # 10 second
 EXTRA_WAIT_TIME = QUEUE_WAIT_TIME / 2
 
 GRPC_MAX_MESSAGE_LENGTH = 1073741824  # 1GB
@@ -279,7 +279,7 @@ class PointToPointBackend(AbstractBackend):
                 reader = stub.recv_data(msg_pb2.BackendID(end_id=self._id))
                 logger.debug(f"type of reader = {type(reader)}")
                 # (w, x, y, z) - w: reader, x: writer for server (context)
-                # y: writer for client (stub), z: a grpc chanpnel
+                # y: writer for client (stub), z: a grpc channel
                 # grpc channel is saved to prevent it from
                 # being garbage-collected
                 self._endpoints[msg.end_id] = (reader, None, stub, grpc_ch)
@@ -288,10 +288,10 @@ class PointToPointBackend(AbstractBackend):
                 # add end to the channel
                 await channel.add(msg.end_id)
             else:  # this is server
-                # server needs to wait for writer context so that it can be ready to send messages
-                # here we can't call "channel.add(msg.end_id)"
-                # therefore, we save info for adding end to a channel here
-                # we do actuall addition in _set_writer() method
+                # server needs to wait for writer context so that it can be ready
+                # to send messages. here we can't call "channel.add(msg.end_id)."
+                # therefore, we save info for adding end to a channel here.
+                # we do actuall addition in _set_writer() method.
                 if msg.end_id not in self.delayed_channel_add:
                     self.delayed_channel_add[msg.end_id] = []
                 self.delayed_channel_add[msg.end_id].append(channel)
@@ -318,6 +318,7 @@ class PointToPointBackend(AbstractBackend):
             return
 
         payload, fully_assembled = self.assemble_chunks(msg)
+        logger.debug(f"msg seq no: {msg.seqno}, assembled: {fully_assembled}")
 
         if fully_assembled:
             logger.debug(f'fully assembled data size = {len(payload)}')
@@ -502,6 +503,7 @@ class PointToPointBackend(AbstractBackend):
                 break
 
             if msg == grpc.aio.EOF:
+                logger.debug("got grpc.aio.EOF")
                 break
 
             await self._handle_data(msg)

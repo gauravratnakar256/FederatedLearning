@@ -32,12 +32,23 @@ from .selectors import selector_provider
 logger = logging.getLogger(__name__)
 
 
-def dummy_excepthook(*args):
-    """Implement dummy except hook."""
-    pass
+def custom_excepthook(exc_type, exc_value, exc_traceback):
+    """Implement a custom exception hook.
+
+    NOTE: this custom version is implemented due to the following warning
+    message printed at the end of execution:
+    "Error in sys.excepthook:
+
+    Original exception was:"
+    This is caused by _inner() function in cleanup().
+    A root-cause is not identified. As a workaround, this custom hook is
+    implemented and set to sys.excepthook
+    """
+    logger.critical("Uncaught exception:",
+                    exc_info=(exc_type, exc_value, exc_traceback))
 
 
-sys.excepthook = dummy_excepthook
+sys.excepthook = custom_excepthook
 
 
 class ChannelManager(object):
@@ -198,7 +209,7 @@ class ChannelManager(object):
                 try:
                     await task
                 except asyncio.CancelledError:
-                    logger.debug("successfully cancelled {task.get_name()}")
+                    logger.debug(f"successfully cancelled {task.get_name()}")
 
         if self._backend:
             _ = run_async(_inner(), self._backend.loop())

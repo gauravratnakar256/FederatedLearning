@@ -14,10 +14,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-
 import logging
 from typing import Tuple, Union
 
+from ..common.constants import EMPTY_PAYLOAD
 from ..proto import backend_msg_pb2 as msg_pb2
 
 DEFAULT_CHUNK_SIZE = 1048576  # 1MB
@@ -26,10 +26,14 @@ logger = logging.getLogger(__name__)
 
 
 class ChunkStore(object):
+
     def __init__(self):
         # for fragment
         self.pidx = 0
         self.cidx = DEFAULT_CHUNK_SIZE
+
+        # for assemble
+        self.recv_buf = list()
 
         # for both fragment and assemble
         self.data = b''
@@ -75,8 +79,15 @@ class ChunkStore(object):
             logger.warning(f'out-of-order seqno from {msg.end_id}')
             return False
 
-        self.data += msg.payload
+        # add payload to a recv buf
+        self.recv_buf.append(msg.payload)
         self.seqno = msg.seqno
         self.eom = msg.eom
+
+        if self.eom:
+            # we assemble payloads in the recv buf array
+            # only if eom is set to True.
+            # In this way, we only pay byte concatenation cost once
+            self.data = EMPTY_PAYLOAD.join(self.recv_buf)
 
         return True
