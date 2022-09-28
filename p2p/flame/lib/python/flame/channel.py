@@ -172,6 +172,7 @@ class Channel(object):
                 return
 
             payload = cloudpickle.dumps(message)
+            logger.debug(f"length of payload = {len(payload)}")
             await self._ends[end_id].put(payload)
 
         _, status = run_async(_put(), self._backend.loop())

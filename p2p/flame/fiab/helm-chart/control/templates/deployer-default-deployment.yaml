@@ -33,9 +33,9 @@ spec:
       containers:
         - args:
           - --apiserver
-          - "https://{{ .Values.frontDoorUrl.apiserver }}:{{ .Values.endpointports.nginxhttps }}"
+          - "https://{{ .Values.frontDoorUrl.apiserver }}:443"
           - --notifier
-          - "{{ .Values.frontDoorUrl.notifier }}:{{ .Values.endpointports.nginxhttps }}"
+          - "{{ .Values.frontDoorUrl.notifier }}:443"
           - --adminid
           - {{ .Values.deployerDefault.adminId }}
           - --region

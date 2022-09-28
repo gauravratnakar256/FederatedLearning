@@ -21,8 +21,7 @@ import sys
 log_path = '/tmp/flame-job.log'
 
 logging.basicConfig(
-    #level=getattr(logging, os.getenv('LOG_LEVEL', 'DEBUG')),
-    level=getattr(logging, 'DEBUG'),
+    level=getattr(logging, os.getenv('LOG_LEVEL', 'INFO')),
     format=
     '%(asctime)s | %(filename)s:%(lineno)d | %(levelname)s | %(threadName)s | %(funcName)s | %(message)s',
     handlers=[

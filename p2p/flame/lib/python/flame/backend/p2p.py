@@ -19,7 +19,7 @@ import asyncio
 import logging
 import socket
 import time
-from typing import AsyncIterable, Iterable, Tuple
+from typing import AsyncIterable, Iterable
 
 import grpc
 
@@ -36,8 +36,10 @@ logger = logging.getLogger(__name__)
 
 ENDPOINT_TOKEN_LEN = 2
 HEART_BEAT_DURATION = 30  # for metaserver
-QUEUE_WAIT_TIME = 10  # 10 second
-EXTRA_WAIT_TIME = QUEUE_WAIT_TIME / 2
+
+PEER_HEART_BEAT_PERIOD = 20  # 20 seconds
+PEER_HEART_BEAT_WAIT_TIME = 1.5 * PEER_HEART_BEAT_PERIOD
+HEART_BEAT_UPDATE_SKIP_TIME = PEER_HEART_BEAT_PERIOD / 4
 
 GRPC_MAX_MESSAGE_LENGTH = 1073741824  # 1GB
 
@@ -317,37 +319,14 @@ class PointToPointBackend(AbstractBackend):
             logger.debug('message sent to self; do nothing')
             return
 
-        payload, fully_assembled = self.assemble_chunks(msg)
-        logger.debug(f"msg seq no: {msg.seqno}, assembled: {fully_assembled}")
-
-        if fully_assembled:
-            logger.debug(f'fully assembled data size = {len(payload)}')
-
-            channel = self._channels[msg.channel_name]
-            rxq = channel.get_rxq(msg.end_id)
-            if rxq is None:
-                logger.debug(f"rxq not found for {msg.end_id}")
-                return
-
-            await rxq.put(payload)
-
-    def assemble_chunks(self, msg: msg_pb2.Data) -> Tuple[bytes, bool]:
-        """Assemble message chunks to build a whole message."""
         if msg.end_id not in self._msg_chunks:
-            self._msg_chunks[msg.end_id] = ChunkStore()
+            channel = self._channels[msg.channel_name]
+            self._msg_chunks[msg.end_id] = ChunkStore(self._loop, channel)
 
         chunk_store = self._msg_chunks[msg.end_id]
-        if not chunk_store.assemble(msg):
-            # clean up wrong message
+        if not chunk_store.assemble(msg) or chunk_store.eom:
+            # clean up if message is wrong or completely assembled
             del self._msg_chunks[msg.end_id]
-            return EMPTY_PAYLOAD, False
-
-        if chunk_store.eom:
-            data = chunk_store.data
-            del self._msg_chunks[msg.end_id]
-            return data, True
-        else:
-            return EMPTY_PAYLOAD, False
 
     async def _tx_task(self, channel, end_id, comm_type: CommType):
         """Conducts data transmission in a loop.
@@ -396,7 +375,8 @@ class PointToPointBackend(AbstractBackend):
 
         while True:
             try:
-                data = await asyncio.wait_for(txq.get(), QUEUE_WAIT_TIME)
+                data = await asyncio.wait_for(txq.get(),
+                                              PEER_HEART_BEAT_PERIOD)
             except asyncio.TimeoutError:
                 if end_id not in self._endpoints:
                     logger.debug(f"end_id {end_id} not in _endpoints")
@@ -419,6 +399,7 @@ class PointToPointBackend(AbstractBackend):
 
                     yield msg
 
+                logger.debug("sending heart beat to server")
                 await clt_writer.send_data(heart_beat())
                 continue
 
@@ -452,7 +433,6 @@ class PointToPointBackend(AbstractBackend):
                 self._generate_data_messages(ch_name, data))
         elif svr_writer is not None:
             for msg in self._generate_data_messages(ch_name, data):
-                logger.debug(f"svr writer sending msg {msg.seqno}")
                 await svr_writer.write(msg)
         else:
             logger.debug("writer not found}")
@@ -469,7 +449,7 @@ class PointToPointBackend(AbstractBackend):
 
             msg = msg_pb2.Data(end_id=self._id,
                                channel_name=ch_name,
-                               payload=data,
+                               payload=chunk,
                                seqno=seqno,
                                eom=eom)
 
@@ -525,8 +505,8 @@ class PointToPointBackend(AbstractBackend):
     def _set_heart_beat(self, end_id) -> None:
         logger.debug(f"heart beat data message for {end_id}")
         if end_id not in self._livecheck:
-            timeout = QUEUE_WAIT_TIME + 5
-            self._livecheck[end_id] = LiveChecker(self, end_id, timeout)
+            self._livecheck[end_id] = LiveChecker(self, end_id,
+                                                  PEER_HEART_BEAT_WAIT_TIME)
 
         self._livecheck[end_id].reset()
 
@@ -566,9 +546,9 @@ class LiveChecker:
     def reset(self) -> None:
         """Reset a task."""
         now = time.time()
-        if now - self._last_reset < EXTRA_WAIT_TIME / 2:
+        if now - self._last_reset < HEART_BEAT_UPDATE_SKIP_TIME:
             # this is to prevent too frequent reset
-            logger.debug("this is to prevent too frequent reset")
+            logger.debug("too frequent reset request; skip it")
             return
 
         self._last_reset = now
